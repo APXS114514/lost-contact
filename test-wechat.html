@@ -1,21 +1,81 @@
-<!DOCTYPE html><html><head><meta charset="UTF-8">
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>失联 · 深夜 23:53</title>
 <link rel="stylesheet" href="macos.css">
-<script>window.__DEMO_SCREEN="desktop";window.__DEMO_OPEN=["wechat"];</script>
-</head><body>
-<!-- boot --><div id="screen-boot" class="screen"><svg class="apple-logo" viewBox="0 0 24 24" width="92" height="92"><path fill="#fff" d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg><div class="boot-bar"><div class="boot-fill" id="boot-fill"></div></div><div class="boot-hint">macOS 失联版 · 正在启动</div><div id="boot-glitch" class="boot-glitch">别信。</div></div>
-<!-- login --><div id="screen-login" class="screen hidden"><div class="login-card"><img id="login-avatar" src="assets/avatar.png" alt="头像"><div class="login-name">李铭泽</div><input id="login-pass" type="password" placeholder="输入密码" autocomplete="off"><div class="login-err hidden" id="login-err">密码不对。再想想。</div><div class="login-hint">提示：密码是他的名字（全拼）</div></div></div>
-<!-- desktop --><div id="screen-desktop" class="screen hidden"><div id="menubar"><div class="mb-left"><span class="mb-apple">&#63743;</span><span class="mb-item">访达</span><span class="mb-item">文件</span><span class="mb-item">编辑</span><span class="mb-item">显示</span><span class="mb-item">前往</span><span class="mb-item">窗口</span><span class="mb-item">帮助</span></div><div class="mb-right"><span class="mb-icon">&#128246;</span><span class="mb-icon">&#9889;</span><span class="mb-clock" id="mb-clock">8月25日 23:53</span></div></div><div id="desktop-area"></div><div id="dock">
-<div class="dock-item" data-app="finder" title="访达"><div class="dock-icon dock-finder">&#128578;</div></div><div class="dock-sep"></div>
-<div class="dock-item" data-app="qq" title="QQ"><div class="dock-icon dock-qq">&#128039;</div></div>
-<div class="dock-item" data-app="wechat" title="微信"><div class="dock-icon dock-wx">&#128172;</div></div>
-<div class="dock-item" data-app="safari" title="Safari"><div class="dock-icon dock-safari">&#129513;</div></div>
-<div class="dock-item" data-app="notes" title="备忘录"><div class="dock-icon dock-notes">&#128220;</div></div>
-<div class="dock-item" data-app="photos" title="照片"><div class="dock-icon dock-photos">&#127748;</div></div>
-<div class="dock-item" data-app="voice" title="语音备忘录"><div class="dock-icon dock-voice">&#127908;</div></div>
-<div class="dock-item" data-app="news" title="新闻"><div class="dock-icon dock-news">&#128250;</div></div><div class="dock-sep"></div>
-<div class="dock-item" data-app="trash" title="废纸篓"><div class="dock-icon dock-trash">&#128465;</div></div>
-<div class="dock-item" data-app="report" title="报警"><div class="dock-icon dock-report">&#128680;</div></div>
-</div><div id="windows"></div><div id="flash-overlay"></div><div id="toast-wrap"></div><div id="lightbox" class="hidden"><img id="lightbox-img" src=""><div id="lightbox-cap"></div><div class="lb-close" onclick="window.__closeLightbox()">&#10005;</div></div></div>
-<!-- ending --><div id="screen-ending" class="screen hidden"><div class="ending-title" id="ending-title"></div><div class="ending-body" id="ending-body"></div><div class="ending-actions" id="ending-actions"></div><div class="ending-hint" id="ending-hint">单击继续</div></div>
-<script src="story.js"></script><script src="app.js"></script>
-</body></html>
+</head>
+<body>
+
+<!-- 开机 -->
+<div id="screen-boot" class="screen">
+  <svg class="apple-logo" viewBox="0 0 24 24" width="92" height="92"><path fill="#fff" d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+  <div class="boot-bar"><div class="boot-fill" id="boot-fill"></div></div>
+  <div class="boot-hint">macOS 失联版 · 正在启动</div>
+  <div id="boot-glitch" class="boot-glitch">别信。</div>
+</div>
+
+<!-- 登录 -->
+<div id="screen-login" class="screen hidden">
+  <div class="lock-clock">
+    <div class="lock-time">23:53</div>
+    <div class="lock-date">8月25日 星期二</div>
+  </div>
+  <div class="login-block">
+    <img id="login-avatar" src="assets/avatar.png" alt="头像">
+    <div class="login-name">李铭泽</div>
+    <input id="login-pass" type="password" placeholder="密码" autocomplete="off">
+    <div class="login-err hidden" id="login-err">密码不对。再想想。</div>
+    <div class="login-hint hidden" id="login-hint">提示：（我的名字）</div>
+  </div>
+</div>
+
+<!-- 桌面 -->
+<div id="screen-desktop" class="screen hidden">
+  <div id="menubar">
+    <div class="mb-left"><span class="mb-apple">&#63743;</span><span class="mb-item">访达</span><span class="mb-item">文件</span><span class="mb-item">编辑</span><span class="mb-item">显示</span><span class="mb-item">前往</span><span class="mb-item">窗口</span><span class="mb-item">帮助</span></div>
+    <div class="mb-right"><span class="mb-icon">&#128246;</span><span class="mb-icon">&#9889;</span><span class="mb-clock" id="mb-clock">8月25日 23:53</span></div>
+  </div>
+  <div id="desktop-area">
+    <div id="desktop-icons">
+      <div class="d-icon" id="di-note" title="微信.txt"><div class="di-glyph">📄</div><div class="di-label">微信.txt</div></div>
+      <div class="d-icon" id="di-mac" title="李铭泽的MacBook"><div class="di-glyph">💾</div><div class="di-label">李铭泽的MacBook</div></div>
+    </div>
+  </div>
+  <div id="dock">
+    <div class="dock-item" data-app="finder" title="访达"><img class="dock-icon-img" src="assets/icons/finder.webp" alt=""></div>
+    <div class="dock-item" data-app="launchpad" title="启动台"><img class="dock-icon-img" src="assets/icons/launchpad.webp" alt=""></div>
+    <div class="dock-sep"></div>
+    <div class="dock-item" data-app="wechat" title="微信"><img class="dock-icon-img" src="assets/icons/wechat.webp" alt=""></div>
+    <div class="dock-item" data-app="xhs" title="小红书"><img class="dock-icon-img" src="assets/icons/xhs.webp" alt=""></div>
+    <div class="dock-item" data-app="safari" title="Safari"><img class="dock-icon-img" src="assets/icons/safari.webp" alt=""></div>
+    <div class="dock-item" data-app="notes" title="备忘录"><img class="dock-icon-img" src="assets/icons/notes.webp" alt=""></div>
+    <div class="dock-item" data-app="photos" title="照片"><img class="dock-icon-img" src="assets/icons/photos.webp" alt=""></div>
+    <div class="dock-item" data-app="voice" title="语音备忘录"><img class="dock-icon-img" src="assets/icons/voice.webp" alt=""></div>
+    <div class="dock-item" data-app="news" title="新闻"><img class="dock-icon-img" src="assets/icons/news.webp" alt=""></div>
+    <div class="dock-item" data-app="settings" title="系统设置"><img class="dock-icon-img" src="assets/icons/settings.webp" alt=""></div>
+    <div class="dock-sep"></div>
+    <div class="dock-item" data-app="trash" title="废纸篓"><img class="dock-icon-img" src="assets/icons/trash.webp" alt=""></div>
+    <div class="dock-item" data-app="report" title="报警"><div class="dock-icon dock-report">&#128680;</div></div>
+  </div>
+  <div id="launchpad"><div class="lp-search"><input id="lp-q" placeholder="搜索"></div><div class="lp-grid"></div><div id="lp-empty" class="lp-empty hidden">没有找到应用</div></div>
+  <div id="windows"></div>
+  <div id="flash-overlay"></div>
+  <div id="toast-wrap"></div>
+  <div id="lightbox" class="hidden"><img id="lightbox-img" src=""><div id="lightbox-cap"></div><div class="lb-close" onclick="window.__closeLightbox()">&#10005;</div></div>
+</div>
+
+<!-- 结局 -->
+<div id="screen-ending" class="screen hidden">
+  <div class="ending-title" id="ending-title"></div>
+  <img id="ending-img" class="ending-img" src="" alt="">
+  <div class="ending-body" id="ending-body"></div>
+  <div class="ending-actions" id="ending-actions"></div>
+  <div class="ending-hint" id="ending-hint">单击继续</div>
+</div>
+
+<script>window.__DEMO_SCREEN="desktop";window.__DEMO_OPEN=["wechat"];</script><script src="story.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

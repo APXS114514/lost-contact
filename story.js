@@ -1,13 +1,8 @@
-window.STORY = {
-  qq: {
-    groupName: "无畏契约开黑群",
-    myName: "铭哥",
-    myAvatar: "assets/avatar.png",
-    avatars: { "AP":"#5b8def", "汐泊诺思":"#9b6de8", "小满":"#e86d9b", "大熊":"#6d8a9b" },
-    messages: [
+var ST_QQ_GROUP_MESSAGES = [
       {t:"time", text:"2026年7月18日 22:14"},
       {t:"text", who:"me", text:"兄弟们，我要跟你们说个事"},
       {t:"text", who:"me", text:"我好像恋爱了"},
+      {t:"text", who:"them", name:"N9rtz", text:"cnmb。就你？"},
       {t:"text", who:"them", name:"汐泊诺思", text:"？？？"},
       {t:"text", who:"them", name:"汐泊诺思", text:"你电脑里那 30 个 G 终于装不下了是吧"},
       {t:"text", who:"them", name:"AP", text:"你他妈天天在家打游戏，跟谁恋爱，跟你的钻石段位？"},
@@ -16,25 +11,27 @@ window.STORY = {
       {t:"text", who:"them", name:"汐泊诺思", text:"女生？"},
       {t:"text", who:"me", text:"女生"},
       {t:"text", who:"them", name:"AP", text:"先说是人是鬼"},
-      {t:"text", who:"them", name:"小满", text:"网恋啊，铭哥你醒醒"},
+      {t:"text", who:"them", name:"Roy", text:"网恋？铭哥你脑子被驴踢了？"},
       {t:"text", who:"me", text:"她人真的很好，我状态最差那阵子，是她一直陪我"},
-      {t:"text", who:"them", name:"大熊", text:"。"},
+      {t:"text", who:"them", name:"Rtwyzz", text:"。"},
       {t:"text", who:"them", name:"汐泊诺思", text:"上图！没图说个屁"},
       {t:"text", who:"me", text:"回头给你们看"},
       {t:"time", text:"2026年7月20日 23:41"},
       {t:"text", who:"them", name:"AP", text:"铭哥，我认真的，你去查查什么叫杀猪盘"},
       {t:"text", who:"them", name:"AP", text:"网恋对象，声音好听，从不肯视频，杭州，还自称高中女生"},
       {t:"text", who:"them", name:"AP", text:"要素全齐了，你 BYD 别被骗了"},
+      {t:"text", who:"them", name:"N9rtz", text:"杀猪盘找的就是你这种傻逼"},
       {t:"text", who:"them", name:"汐泊诺思", text:"哈哈哈哈哈哈要素全齐"},
-      {t:"text", who:"them", name:"小满", text:"她多大啊？"},
+      {t:"text", who:"them", name:"Roy", text:"她多大？成年没有？"},
       {t:"text", who:"me", text:"高二，说是下学期高三"},
-      {t:"text", who:"them", name:"小满", text:"高中生……那你更得小心，未成年的钱你也敢要？"},
+      {t:"text", who:"them", name:"Roy", text:"高中生你也敢？人家还没成年吧？"},
       {t:"text", who:"me", text:"我没花过她钱，是她总想给我花钱"},
       {t:"text", who:"me", text:"我都不好意思"},
       {t:"text", who:"them", name:"AP", text:"？？？"},
       {t:"text", who:"them", name:"AP", text:"这就更不对劲了兄弟，她图你什么？图你钻石？"},
-      {t:"text", who:"them", name:"大熊", text:"图他打游戏菜，好带他上分"},
-      {t:"text", who:"them", name:"汐泊诺思", text:"大熊你终于说话了"},
+      {t:"text", who:"them", name:"Rtwyzz", text:"图他打游戏菜，好带他上分"},
+      {t:"text", who:"them", name:"Roy", text:"Rtwyzz你倒是说句话，除了“……”你还会什么"},
+      {t:"text", who:"them", name:"汐泊诺思", text:"哈哈哈哈哈哈哈哈"},
       {t:"text", who:"me", text:"滚滚滚"},
       {t:"text", who:"me", text:"反正我信她"},
       {t:"text", who:"them", name:"AP", text:"行，你信。出了事别哭"},
@@ -46,9 +43,10 @@ window.STORY = {
       {t:"text", who:"them", name:"AP", text:"等等，初中照片？"},
       {t:"text", who:"them", name:"AP", text:"她为什么不发现在的？"},
       {t:"text", who:"me", text:"她害羞嘛，说见面就知道了"},
-      {t:"text", who:"them", name:"小满", text:"铭哥……哪个正常女生见网友发初中照片啊"},
+      {t:"text", who:"them", name:"Roy", text:"正常女生见网友发初中照片？这他妈什么剧本"},
+      {t:"text", who:"them", name:"N9rtz", text:"初中照片你也信？你可真行"},
       {t:"text", who:"me", text:"我信她"},
-      {t:"text", who:"them", name:"大熊", text:"信字值多少钱"},
+      {t:"text", who:"them", name:"Rtwyzz", text:"信字值多少钱"},
       {t:"text", who:"me", text:"值一张高铁票"},
       {t:"text", who:"them", name:"汐泊诺思", text:"你买票了？？？"},
       {t:"text", who:"me", text:"嗯。后天去杭州。她酒店都订好了，我就出个车票钱"},
@@ -57,34 +55,42 @@ window.STORY = {
       {t:"text", who:"me", text:"我冷静过了。我查过杀猪盘了，她不是"},
       {t:"text", who:"them", name:"AP", text:"你查了？你查了啥？你查了个寂寞"},
       {t:"text", who:"me", text:"骗子不会记得我哪天不开心。她记得"},
-      {t:"text", who:"them", name:"小满", text:"……"},
-      {t:"text", who:"them", name:"大熊", text:"……"},
+      {t:"text", who:"them", name:"Rtwyzz", text:"……"},
+      {t:"text", who:"them", name:"Roy", text:"Rtwyzz你再劝也没用，他上头了，恋爱脑"},
       {t:"text", who:"them", name:"AP", text:"行。你非要去。那你给我报备"},
       {t:"text", who:"me", text:"行，我给你报备"},
       {t:"text", who:"them", name:"汐泊诺思", text:"我也要我也要，报备给我一份"},
       {t:"text", who:"me", text:"你俩一人一份"},
-      {t:"text", who:"them", name:"小满", text:"平安回来，铭哥"},
+      {t:"text", who:"them", name:"Rtwyzz", text:"平安回来，铭哥"},
       {t:"time", text:"2026年7月24日 22:58"},
       {t:"text", who:"me", text:"明天早上的车"},
       {t:"text", who:"me", text:"兄弟们，等我消息"},
       {t:"text", who:"them", name:"AP", text:"等你报备"},
       {t:"text", who:"them", name:"汐泊诺思", text:"平安！"},
-      {t:"text", who:"them", name:"小满", text:"平安！！"},
-      {t:"text", who:"them", name:"大熊", text:"平安。"},
-      {t:"text", who:"me", text:"走了"},
-    ]
-  },
+      {t:"text", who:"them", name:"Rtwyzz", text:"平安！！"},
+      {t:"text", who:"them", name:"Roy", text:"……你他妈活着回来"},
+      {t:"text", who:"them", name:"N9rtz", text:"别他妈死了没人收尸"},
+      {t:"text", who:"me", text:"走了"}
+    ];
+window.STORY = {
   wechat: {
+    password: "limingze666",
     myName: "LuvisDrug",
     myAvatar: "assets/avatar.png",
+    avatars: { AP:"assets/avatars/ap.webp", "汐泊诺思":"assets/avatars/xibo.webp", Rtwyzz:"assets/avatars/rtwyzz.webp", Roy:"assets/avatars/roy.webp", N9rtz:"assets/avatars/n9rtz.webp", "帅气鲨团子":"assets/avatars/tuanzi.webp" },
     contacts: [
-      {id:"tuanzi", name:"帅气鲨团子", av:"🦈", last:"明天见。"},
-      {id:"apxs", name:"APXS", av:"A", color:"#5b8def", last:"……如果看到我的号上线，别信。"},
-      {id:"xibo", name:"汐泊诺思", av:"汐", color:"#9b6de8", last:"到时候你就知道了！"},
+      {id:"group", name:"德意志民主共和国", av:"assets/avatars/group.webp", last:"走了"},
+      {id:"tuanzi", name:"帅气鲨团子", av:"assets/avatars/tuanzi.webp", last:"明天见。"},
+      {id:"apxs", name:"APXS", av:"assets/avatars/ap.webp", last:"……如果看到我的号上线，别信。"},
+      {id:"xibo", name:"汐泊诺思", av:"assets/avatars/xibo.webp", last:"到时候你就知道了！"},
+      {id:"rtwyzz", name:"Rtwyzz", av:"assets/avatars/rtwyzz.webp", last:"好。那你早点睡。明天一路顺风"},
+      {id:"roy", name:"Roy", av:"assets/avatars/roy.webp", last:"走了走了，上号"},
+      {id:"n9rtz", name:"N9rtz", av:"assets/avatars/n9rtz.webp", last:"死了别通知我"},
       {id:"mom", name:"妈妈", av:"妈", color:"#e86d9b", last:"注意安全，到了给妈说一声"},
       {id:"cousin", name:"表哥", av:"表", color:"#6d8a9b", last:"行，转你了，800 够不"}
     ],
     chats: {
+      group: ST_QQ_GROUP_MESSAGES,
       tuanzi: [
         {t:"time", text:"2026年1月18日 01:12"},
         {t:"text", who:"them", name:"帅气鲨团子", text:"你怎么还没睡"},
@@ -115,6 +121,7 @@ window.STORY = {
         {t:"text", who:"them", name:"帅气鲨团子", text:"你不用管，酒店我来订，你人到就行"},
         {t:"text", who:"me", text:"那怎么行，哪能让你花钱"},
         {t:"text", who:"them", name:"帅气鲨团子", text:"你到杭州就是给我面子啦！"},
+        {t:"redpacket", who:"them", name:"帅气鲨团子", text:"给你买高铁上的零食～"},
         {t:"time", text:"2026年7月14日 23:58"},
         {t:"text", who:"them", name:"帅气鲨团子", text:"我真的是独生女啦，我爸妈就我一个"},
         {t:"text", who:"me", text:"好好好，独生女独生女"},
@@ -153,7 +160,7 @@ window.STORY = {
         {t:"text", who:"me", text:"……好吧"},
         {t:"text", who:"them", name:"帅气鲨团子", text:"嘻嘻，晚安！"},
         {t:"time", text:"2026年7月20日 23:19"},
-        {t:"voice", who:"them", name:"帅气鲨团子", dur:"6", trans:"人家就是想见你嘛"},
+        {t:"voice", who:"them", name:"帅气鲨团子", dur:"6", trans:"人家就是想见你嘛", src:"assets/voice-tuanzi.mp3", srcB:"assets/voice-tuanzi-b.mp3"},
         {t:"text", who:"me", text:"你声音今天怎么不太一样"},
         {t:"text", who:"them", name:"帅气鲨团子", text:"刚洗完澡嗓子哑啦"},
         {t:"text", who:"me", text:"哦"},
@@ -205,7 +212,9 @@ window.STORY = {
         {t:"sticker", who:"me", src:"assets/sticker-heart.jpg"},
         {t:"time", text:"2026年7月25日 00:13"},
         {t:"text", who:"me", text:"AP。如果月底我还没回来，就把我电脑寄给你。密码你知道的。"},
-        {t:"text", who:"me", text:"……如果看到我的号上线，别信。"}
+        {t:"text", who:"me", text:"……如果看到我的号上线，别信。"},
+        {t:"time", text:"2026年7月26日 02:14"}, 
+        {t:"text", who:"me", text:"我没事。别担心我。", failed:true}
       ],
       xibo: [
         {t:"time", text:"2026年7月24日 21:06"},
@@ -235,6 +244,7 @@ window.STORY = {
         {t:"text", who:"them", name:"汐泊诺思", text:"😿"},
         {t:"time", text:"2026年7月24日 21:25"},
         {t:"text", who:"them", name:"汐泊诺思", text:"对了，我把那张照片和一段语音打包发你了，存好"},
+        {t:"text", who:"them", name:"汐泊诺思", text:"照片我存了。要是她真是骗子，这就是证据；要是不是……你就当我啥也没说。"},
         {t:"file", who:"them", name:"汐泊诺思", fname:"到时候再看.zip", ficon:"📦"},
         {t:"text", who:"them", name:"汐泊诺思", text:"你忘了为啥去杭州就打开。别谢我，谢你自己还记得"},
         {t:"text", who:"me", text:"？"},
@@ -268,11 +278,42 @@ window.STORY = {
         {t:"text", who:"me", text:"我知道"},
         {t:"text", who:"them", name:"表哥", text:"行，转你了，800 够不"},
         {t:"text", who:"me", text:"够了，谢哥"}
+      ],
+      rtwyzz: [
+        {t:"time", text:"2026年7月23日 22:40"},
+        {t:"text", who:"them", name:"Rtwyzz", text:"铭哥，你真的要去啊……我有点担心你"},
+        {t:"text", who:"me", text:"放心，我又不是小孩"},
+        {t:"text", who:"them", name:"Rtwyzz", text:"那、那你到了记得报个平安。我们都等你"},
+        {t:"text", who:"me", text:"嗯"},
+        {t:"text", who:"them", name:"Rtwyzz", text:"还有，Roy 他就是嘴臭，你别往心里去"},
+        {t:"text", who:"me", text:"我知道，他就那样"},
+        {t:"text", who:"them", name:"Rtwyzz", text:"好。那你早点睡。明天一路顺风"},
+        {t:"text", who:"me", text:"嗯。晚安，李磊。"}
+      ],
+      roy: [
+        {t:"time", text:"2026年7月24日 21:40"},
+        {t:"text", who:"them", name:"Roy", text:"喂，去杭州见那女的？你脑子呢"},
+        {t:"text", who:"me", text:"我知道我在干什么"},
+        {t:"text", who:"them", name:"Roy", text:"知道个屁。李磊那货还劝你小心点，笑死，他自己连恋爱都没谈过"},
+        {t:"text", who:"me", text:"他关心我，不像你只会喷"},
+        {t:"text", who:"them", name:"Roy", text:"我喷你是为你好。……行，到了报个平安，别他妈玩失踪，尤其是别学李磊那样一声不吭"},
+        {t:"text", who:"me", text:"好"},
+        {t:"text", who:"them", name:"Roy", text:"走了走了，上号"}
+      ],
+      n9rtz: [
+        {t:"time", text:"2026年7月24日 21:50"},
+        {t:"text", who:"them", name:"N9rtz", text:"你他妈真要去？"}, 
+        {t:"text", who:"me", text:"嗯"}, 
+        {t:"text", who:"them", name:"N9rtz", text:"你脑子被门夹了？她高中女生，你大学毕业，你上赶着去送人头？"}, 
+        {t:"text", who:"me", text:"我说不清。但我得去"}, 
+        {t:"text", who:"them", name:"N9rtz", text:"行，你牛逼。死了别通知我，晦气"}, 
+        {t:"text", who:"me", text:"……知道了"}, 
+        {t:"text", who:"them", name:"N9rtz", text:"cnmb。"} 
       ]
     },
     moments: [
       { name:"LuvisDrug", av:"assets/avatar.png", time:"7月24日 22:40", text:"去见一个重要的人", img:"assets/p-station.webp", comments:"妈妈评论：去哪啊？", comments2:"（LuvisDrug 未回复）" },
-      { name:"汐泊诺思", av:"汐", color:"#9b6de8", time:"7月23日 20:15", text:"减肥第五天，点了个炸鸡，明天重新开始", img:"", comments:"LuvisDrug 评论：哈哈哈哈哈哈", comments2:"汐泊诺思 回复 LuvisDrug：滚" }
+      { name:"汐泊诺思", av:"assets/avatars/xibo.webp", color:"#9b6de8", time:"7月23日 20:15", text:"减肥第五天，点了个炸鸡，明天重新开始", img:"", comments:"LuvisDrug 评论：哈哈哈哈哈哈", comments2:"汐泊诺思 回复 LuvisDrug：滚" }
     ]
   },  safari: {
     history: [
@@ -317,18 +358,25 @@ window.STORY = {
     {src:"assets/p-station.webp", cap:"IMG_0726_0047.jpg · 7/26 00:47 · 同一栋楼，夜里（只拍了楼顶的灯牌）"}
   ],
   news: [
-    {id:"n1", title:"深夜无人操作的电脑自行亮屏？警方：正在调查", src:"杭州都市快讯 · 2026-08-12", ghost:true, body:"近日有市民反映，某网吧凌晨三台电脑自行开机，屏幕上打出「别找我」字样，警方到场后电脑恢复正常，未发现人为操作痕迹。监控画面未拍到异常。\n警方提醒：网络信息请理性看待，不信谣不传谣。"},
-    {id:"n2", title:"警惕以「网恋奔现」为诱饵的非法拘禁案件", src:"杭州警方反诈提醒 · 2026-08-15", ev:7, body:"近期多地出现以网络交友、线下见面为诱饵，将受害人诱骗至指定地点后限制人身自由的案件。\n警方提示：网络交友需谨慎，涉及异地见面、不明地址、大额消费，请务必提高警惕，及时报警。\n\n（你看完这条，把鼠标挪开了。它说的每一个字，都像在说铭泽。）"},
-    {id:"n3", title:"寻人启事 · 李铭泽，男，22 岁", src:"失踪人口信息 · 2026-08-20", body:"李铭泽，22 岁，山东德州人，德州 XX 大学大四学生。2026 年 7 月 25 日前往杭州后失联，7 月 26 日手机失去信号。家属已报警。\n如有线索请联系德州 / 杭州警方。\n[配图：李铭泽的头像]"}
+    {id:"n1", tag:"热点", title:"深夜无人操作的电脑自行亮屏？警方：正在调查", src:"杭州都市快讯 · 2026-08-12", ghost:true, body:"近日有市民反映，某网吧凌晨三台电脑自行开机，屏幕上打出「别找我」字样，警方到场后电脑恢复正常，未发现人为操作痕迹。监控画面未拍到异常。\n警方提醒：网络信息请理性看待，不信谣不传谣。"},
+    {id:"n2", tag:"置顶", title:"警惕以「网恋奔现」为诱饵的非法拘禁案件", src:"杭州警方反诈提醒 · 2026-08-15", ev:7, body:"近期多地出现以网络交友、线下见面为诱饵，将受害人诱骗至指定地点后限制人身自由的案件。\n警方提示：网络交友需谨慎，涉及异地见面、不明地址、大额消费，请务必提高警惕，及时报警。\n\n（你看完这条，把鼠标挪开了。它说的每一个字，都像在说铭泽。）"},
+    {id:"n3", tag:"寻人", title:"寻人启事 · 李铭泽，男，22 岁", src:"失踪人口信息 · 2026-08-20", body:"李铭泽，22 岁，山东德州人，德州 XX 大学大四学生。2026 年 7 月 25 日前往杭州后失联，7 月 26 日手机失去信号。家属已报警。\n如有线索请联系德州 / 杭州警方。\n[配图：李铭泽的头像]"},
+    {id:"n4", tag:"本地", title:"德州高校毕业生就业招聘会本周举行", src:"德州日报 · 2026-07-08", img:"news-2.webp", body:"2026 届高校毕业生就业招聘会将于本周在德州会展中心举行，预计 200 余家企业提供岗位 8000 余个。现场设就业指导专区，欢迎毕业生到场咨询。"},
+    {id:"n5", tag:"天气", title:"全国多地持续高温 局地可达40℃", src:"中央气象台 · 2026-07-11", img:"news-3.webp", body:"中央气象台继续发布高温黄色预警，华北、江南等多地最高气温可达 38-40℃。专家提醒：午后尽量减少外出，注意防暑降温。"},
+    {id:"n6", tag:"交通", title:"杭州地铁新线路今日开通试运营", src:"杭州交通 · 2026-07-18", img:"news-4.webp", body:"杭州地铁文三线今日开通试运营，全长 28.6 公里，设站 22 座，串联起西湖区多个商圈与居住区，为沿线居民出行带来便利。"},
+    {id:"n7", tag:"反诈", title:"警惕AI换脸诈骗 警方发布防骗指南", src:"反诈中心 · 2026-07-22", img:"news-5.webp", body:"近期多地出现利用 AI 换脸、变声技术实施诈骗的案件。警方提示：凡是自称熟人要求转账的，务必通过电话或当面核实；涉及网络交友的，谨防「杀猪盘」套路。"},
+    {id:"n8", tag:"行业", title:"7月电竞产业报告：无畏契约用户量创新高", src:"电竞产业研究院 · 2026-07-23", img:"news-6.webp", body:"2026 年 7 月电竞产业报告发布：无畏契约国服月活用户突破新高，高校赛区报名人数同比翻倍。分析师认为，电竞正在成为年轻人重要的社交方式。"},
+    {id:"n9", tag:"出行", title:"暑运高峰：德州至杭州高铁客流明显增加", src:"铁路12306 · 2026-07-24", img:"news-7.webp", body:"随着暑期出游高峰来临，德州至杭州方向高铁客流明显增加，日均开行列车 18 对。铁路部门提醒旅客提前购票、合理安排行程。"},
+    {id:"n10", tag:"警讯", title:"杭州警方开展治安集中清查行动", src:"杭州公安 · 2026-08-14", img:"news-8.webp", body:"近日，杭州警方在西湖区文三路一带开展治安集中清查行动，重点排查出租屋、旅馆及流动人员，强化重点区域治安管控。"}
   ],
   voice: {
-    morse: { name:"LOOPmorsecode.wav", meta:"7/26 02:11 · 来自 iCloud 同步 · 来源设备：LuvisDrug 的 iPhone", src:"assets/morse.wav", note:"深夜环境音 + 规律滴答声（循环，约 40 秒）。", decode:"滴答声解码（配合摩斯对照表）：\n「救我」重复 3 遍 + 坐标 N30.283, E120.133\n（≈ 文三路 515 号一带）", ghost:"第 39 秒……好像有人在喊「AP」。倒回去听，没有了。" }
+    morse: { name:"LOOPmorsecode.wav", meta:"7/26 02:11 · 来自 iCloud 同步 · 来源设备：LuvisDrug 的 iPhone", src:"assets/morse-full.mp3", note:"深夜环境音 + 规律滴答声（循环，约 40 秒）。", decode:"滴答声解码（配合摩斯对照表）：\n「救我」重复 3 遍 + 坐标 N30.283, E120.133\n（≈ 文三路 515 号一带）", ghost:"第 39 秒……好像有人在喊「AP」。倒回去听，没有了。" }
   },
   finder: {
     zip: { name:"到时候再看.zip", icon:"📦" },
     zipFiles: [
-      {t:"img", icon:"📷", name:"初中.jpg（已损坏）", desc:"只能看清：一张模糊的、穿校服的少女面孔，五官糊成一片。右下角时间戳 2026-07-23。", ev:1, blur:true, src:"assets/blur-source.webp"},
-      {t:"voice", icon:"🎤", name:"语音-末尾.mp3", desc:"（笑闹录音：汐泊诺思 + 铭泽。末尾，铭泽安静下来。）\n「……其实我有点怕。但万一她真的需要我呢。她一个小孩，在杭州，谁都不认识。\n  万一那些劝我的人是对的呢。可万一她说的都是真的呢。那我就得去。」", play:"点击播放语音（播放后显示上方转写）"},
+      {t:"img", icon:"📷", name:"初中.jpg（已过期）", src:"assets/expired-photo.png", desc:"（打开后只有一行字：图片已过期或已被清理。\n连汐泊诺思存下来的这张，也过期了。\n文件时间戳：2026-07-23 · 她确实发过这张照片。）", ev:1},
+      {t:"voice", icon:"🎤", name:"语音-末尾.mp3", src:"assets/voice-xibo-final.mp3", desc:"（7/24 晚连麦打游戏时的录音——汐泊诺思习惯录复盘。结果录到最后，铭泽安静下来。）\n「……其实我有点怕。但万一她真的需要我呢。她一个小孩，在杭州，谁都不认识。\n  万一那些劝我的人是对的呢。可万一她说的都是真的呢。那我就得去。」"},
       {t:"txt", icon:"📄", name:"留言.txt", desc:"「你忘了为啥去杭州就打开。别谢我，谢你自己还记得。—— 汐泊诺思」"}
     ],
     plan: { icon:"📄", name:"行程规划.txt", ev:4 },
@@ -338,7 +386,8 @@ window.STORY = {
     encFiles: [
       {t:"diary", icon:"🖼", name:"手写日记扫描件 ×5", desc:"（5 张扫描照片，字迹逐篇潦草——内容与「备忘录」中的日记一致。最后一张 7/24 深夜，最后一行字迹抖得几乎认不出。）", ev:8},
       {t:"morse", icon:"🔢", name:"摩斯电码对照表", desc:"一张折痕明显的手写对照表：字母 ↔ 摩斯符号。他为了听那段录音准备的。", ev:3, morseTable:true},
-      {t:"folder", icon:"📁", name:"（空文件夹）如果我能出去", desc:"空的。"}
+      {t:"folder", icon:"📁", name:"（空文件夹）如果我能出去", desc:"空的。"},
+      {t:"exe", icon:"⚡", name:"unknown.exe", desc:""}
     ],
     imgGhost: { name:"IMG_0824_2353.jpg", icon:"📷", desc:"拍的是德州那个房间、桌上 Mac 屏幕亮着、时间 23:53、键盘上压着那张褪色的贴纸。\n拍摄时间：8月24日 23:53。\n8月24日。铭泽已经不在了。谁拍的？", src:"assets/room-dark.webp", ev:null }
   },
@@ -348,7 +397,7 @@ window.STORY = {
     {icon:"📄", name:"她的资料.txt", del:"7/25 00:03 删除", ev:6, restoreText:"她说的信息整理：\n年龄：自称 17，实际 19（见面时确认）\n照片：她发来的是「初中照片」，文件 EXIF 显示拍摄于 2023 年\n「爸爸管得严」：她从未发过任何家庭照片\n地址：文三路 515 号，该地址不存在这户人家\n\n——人设是假的。她本人是真的（见「到时候再看」）。"}
   ],
   evidence: [
-    {id:1, t:"她真实存在（「到时候再看」里的照片）"},
+    {id:1, t:"她真实存在（「到时候再看」里的照片文件）"},
     {id:2, t:"摩斯求救信号 + 坐标（语音备忘录）"},
     {id:3, t:"摩斯电码对照表（加密文件夹）"},
     {id:4, t:"行程与地址（文三路 515 号）"},
@@ -357,6 +406,23 @@ window.STORY = {
     {id:7, t:"杭州反诈提醒新闻"},
     {id:8, t:"铭泽的手写日记（动机）"}
   ],
+  xhs: {
+    posts: [
+      {title:"25岁装修100㎡小家，普通却温馨", body:"坐标山东，套内93平，三室两厅。自己设计的家，没有找装修公司。温馨自由舒服，无论多晚回家，都有一盏灯为自己点亮，就足够啦。", imgs:["https://picsum.photos/seed/xhs-home/640/480"], author:"惠宝儿", avatar:"xhs/xhs2.webp", likes:18000, cat:"装修", tags:["装修日记","家居美学"], date:"2026-07-02"},
+      {title:"短发扎着还是披着，怎么好看怎么来！", body:"短发妹妹的日常造型分享，随手一扎就很清爽，不同场合不同风格，总有一款适合你。", imgs:["https://picsum.photos/seed/xhs-shorthair/640/480"], author:"无敌桃桃", avatar:"桃", likes:3627, cat:"时尚", tags:["短发","日常造型"], date:"2026-07-05"},
+      {title:"三伏天减脂食谱，不节食不饿肚子", body:"减脂期间的饮食记录，低卡高蛋白。早餐燕麦+鸡蛋，午餐鸡胸肉+糙米，晚餐轻食沙拉。附详细热量表。", imgs:["https://picsum.photos/seed/xhs-diet/640/480"], author:"五十妞爱养生", avatar:"xhs/xhs37.webp", likes:21000, cat:"美食", tags:["减脂","食谱"], date:"2026-07-08"},
+      {title:"带爷爷坐了趟高铁，他开心得像孩子", body:"带爷爷第一次坐高铁，爷爷在南站拍了好多照片，说这辈子没见过这么大的站，一定要再来一次。", imgs:["https://picsum.photos/seed/xhs-grandpa/640/480"], author:"唐安妮", avatar:"xhs/xhs16_png.webp", likes:27000, cat:"旅行", tags:["高铁","家人"], date:"2026-07-11"},
+      {title:"周末动物园一日游，小动物们太治愈了", body:"周末带小朋友去了动物园，长颈鹿、大象、小猴子都超可爱，强烈推荐！", imgs:["https://picsum.photos/seed/xhs-zoo/640/480"], author:"喵呜不吃鱼", avatar:"喵", likes:5200, cat:"萌宠", tags:["动物园","亲子"], date:"2026-07-13"},
+      {title:"水族馆拍照也太出片了！附机位攻略", body:"蓝色背景随便拍都好看，建议穿浅色衣服。分享几个绝佳机位，姐妹们冲！", imgs:["https://picsum.photos/seed/xhs-aquarium/640/480"], author:"小鹿乱撞", avatar:"鹿", likes:8900, cat:"拍照", tags:["水族馆","拍照"], date:"2026-07-15"},
+      {title:"夏天的野餐，和朋友们一起吧", body:"树荫、草地、零食和笑声，夏天就该这样过。", imgs:["https://picsum.photos/seed/xhs-picnic/640/480"], author:"半糖去冰", avatar:"xhs/xhs24.webp", likes:6400, cat:"日常", tags:["野餐","夏天"], date:"2026-07-17"},
+      {title:"这家店我吃了十年，终于鼓起勇气写测评", body:"味道没变，老板没变，变的只有价格。推荐招牌菜，附菜单。", imgs:["https://picsum.photos/seed/xhs-restaurant/640/480"], author:"干饭王", avatar:"xhs/xhs20.webp", likes:15000, cat:"美食", tags:["探店","老店"], date:"2026-07-19"},
+      {title:"姐妹们小心！网恋杀猪盘亲身经历，别再上当了", plotHint:"群里 AP 说的杀猪盘，原来真的有人遇到过。……她说得，好像她。", body:"跟一个网友聊了三个月，声音好听，从不肯视频，自称还在上学。要不是我留了个心眼，差点就被骗了。提醒所有姐妹：不肯视频的、总在深夜找你的、说自己是学生的，都要警惕。", imgs:["xhs/xhs13.webp"], author:"清醒的雯", avatar:"xhs/xhs31.webp", likes:45000, cat:"情感", tags:["杀猪盘","网恋"], date:"2026-07-21", plot:true},
+      {title:"杭州文三路真的太好逛了！宝藏街区实拍", plotHint:"文三路 515 号——和备忘录里那个地址一模一样。", body:"文三路这边小店超多，傍晚的灯光很舒服。就是最近感觉这边人少了点，有几家店好像好久没开门了。坐标：文三路515号附近。", imgs:["p-skyline.webp","p-oldtown.webp"], author:"阿绿在杭州", avatar:"xhs/xhs30.webp", likes:9300, cat:"旅行", tags:["杭州","文三路"], date:"2026-07-24", plot:true},
+      {title:"明天要去见游戏里认识的那个男生了，好紧张", plotHint:"游戏里认识、坐高铁来杭州见面……这说的，是铭泽吗？", body:"在游戏里认识快一年了，他声音很好听，人也很温柔。他说他要坐高铁来杭州见我。我有点怕，又有点期待。希望他不是坏人……也希望大家祝我顺利。", imgs:["p-station.webp"], author:"一颗小汤圆", avatar:"xhs/xhs38.webp", likes:2800, cat:"情感", tags:["游戏","奔现"], date:"2026-07-24", plot:true},
+      {title:"在文三路捡到一部手机，关机了，交派出所了", plotHint:"7/26 凌晨，文三路 515 号附近，关机、屏幕碎了的手机……会是他吗？", body:"凌晨在文三路515号附近捡到一部手机，已经关机了，屏幕碎了一点。应该是不小心掉的，已经交到文三路派出所了。失主看到的话快去领吧。", imgs:["p-museum.webp"], author:"热心市民陈", avatar:"陈", likes:3100, cat:"日常", tags:["杭州","失物招领"], date:"2026-07-26", plot:true},
+      {title:"深夜在网吧值班，电脑自己开机了……", plotHint:"和新闻里那条网吧灵异，一模一样。", body:"凌晨三点，三台电脑自己开机，屏幕上打出「别找我」三个字。监控没拍到人。老板让我别乱说。我觉得还是说出来吧，万一有人知道怎么回事。", imgs:["room-dark.webp"], author:"网管小李", avatar:"网", likes:12000, cat:"灵异", tags:["都市传说"], date:"2026-08-12", plot:true}
+    ]
+  },
   endings: {
     bad: { title:"坏结局 · 别找我了", text:"凌晨 2 点 57 分。\n群里的头像亮了起来。\n我盯着屏幕，\n想起他说过——\n「如果看到我的号上线，别信。」\n\n可这条消息，我信了。\n\n「别找我了。」\n\n我没有点开它。\n也没有关掉电脑。\n屏幕的光照到天亮。\n头像暗下去的时候，\n和他说这话的时候一样快。\n\n后来我再也没见过那个头像亮起来。\n\n我不知道那是谁。\n也许是他自己。\n也许是别的什么。\n\n我只知道，\n我再也没等到他的报备。" },
     open: { title:"开放结局 · 快递已签收", text:"警方端了那个窝点的时候，\n里面已经没有人了。\n\n一个月后，\n我收到一条陌生号码的短信：\n「下次开黑，记得给我留个位子。」\n\n我回拨，已关机。\n我回了两个字：\n「收到。」\n\n那头再没有消息。\n\n我不知道那是他，\n还是别的什么。\n\n但我知道，\n他让我留个位子。\n\n位子我留了。\n留到现在。" },

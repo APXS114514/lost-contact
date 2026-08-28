@@ -37,29 +37,22 @@
     <div class="mb-left"><span class="mb-apple">&#63743;</span><span class="mb-item">访达</span><span class="mb-item">文件</span><span class="mb-item">编辑</span><span class="mb-item">显示</span><span class="mb-item">前往</span><span class="mb-item">窗口</span><span class="mb-item">帮助</span></div>
     <div class="mb-right"><span class="mb-icon">&#128246;</span><span class="mb-icon">&#9889;</span><span class="mb-clock" id="mb-clock">8月25日 23:53</span></div>
   </div>
-  <div id="desktop-area">
-    <div id="desktop-icons">
-      <div class="d-icon" id="di-note" title="微信.txt"><div class="di-glyph">📄</div><div class="di-label">微信.txt</div></div>
-      <div class="d-icon" id="di-mac" title="李铭泽的MacBook"><div class="di-glyph">💾</div><div class="di-label">李铭泽的MacBook</div></div>
-    </div>
-  </div>
+  <div id="desktop-area"></div>
   <div id="dock">
     <div class="dock-item" data-app="finder" title="访达"><img class="dock-icon-img" src="assets/icons/finder.webp" alt=""></div>
     <div class="dock-item" data-app="launchpad" title="启动台"><img class="dock-icon-img" src="assets/icons/launchpad.webp" alt=""></div>
     <div class="dock-sep"></div>
     <div class="dock-item" data-app="wechat" title="微信"><img class="dock-icon-img" src="assets/icons/wechat.webp" alt=""></div>
-    <div class="dock-item" data-app="xhs" title="小红书"><img class="dock-icon-img" src="assets/icons/xhs.webp" alt=""></div>
     <div class="dock-item" data-app="safari" title="Safari"><img class="dock-icon-img" src="assets/icons/safari.webp" alt=""></div>
     <div class="dock-item" data-app="notes" title="备忘录"><img class="dock-icon-img" src="assets/icons/notes.webp" alt=""></div>
     <div class="dock-item" data-app="photos" title="照片"><img class="dock-icon-img" src="assets/icons/photos.webp" alt=""></div>
     <div class="dock-item" data-app="voice" title="语音备忘录"><img class="dock-icon-img" src="assets/icons/voice.webp" alt=""></div>
-    <div class="dock-item" data-app="news" title="新闻"><img class="dock-icon-img" src="assets/icons/news.webp" alt=""></div>
-    <div class="dock-item" data-app="settings" title="系统设置"><img class="dock-icon-img" src="assets/icons/settings.webp" alt=""></div>
+    <div class="dock-item" data-app="news" title="新闻"><div class="dock-icon dock-news">&#128250;</div></div>
     <div class="dock-sep"></div>
     <div class="dock-item" data-app="trash" title="废纸篓"><img class="dock-icon-img" src="assets/icons/trash.webp" alt=""></div>
     <div class="dock-item" data-app="report" title="报警"><div class="dock-icon dock-report">&#128680;</div></div>
   </div>
-  <div id="launchpad"><div class="lp-search"><input id="lp-q" placeholder="搜索"></div><div class="lp-grid"></div><div id="lp-empty" class="lp-empty hidden">没有找到应用</div></div>
+  <div id="launchpad"><div class="lp-grid"></div></div>
   <div id="windows"></div>
   <div id="flash-overlay"></div>
   <div id="toast-wrap"></div>
@@ -69,13 +62,12 @@
 <!-- 结局 -->
 <div id="screen-ending" class="screen hidden">
   <div class="ending-title" id="ending-title"></div>
-  <img id="ending-img" class="ending-img" src="" alt="">
   <div class="ending-body" id="ending-body"></div>
   <div class="ending-actions" id="ending-actions"></div>
   <div class="ending-hint" id="ending-hint">单击继续</div>
 </div>
 
-<script src="story.js"></script>
+<script>window.__DEMO_SCREEN="desktop";</script><script>setTimeout(function(){ var d=document.querySelector('[data-app="launchpad"]'); if(d) d.click(); }, 500);</script><script src="story.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
