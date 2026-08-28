@@ -54,6 +54,7 @@
     <div id="desktop-icons">
       <div class="d-icon" id="di-note" title="微信.txt"><div class="di-glyph">📄</div><div class="di-label">微信.txt</div></div>
       <div class="d-icon" id="di-mac" title="李铭泽的MacBook"><div class="di-glyph">💾</div><div class="di-label">李铭泽的MacBook</div></div>
+      <div class="d-icon hidden" id="di-letter" title="求救信.txt"><div class="di-glyph">📄</div><div class="di-label">求救信.txt</div></div>
     </div>
   </div>
   <div id="dock">
@@ -70,13 +71,23 @@
     <div class="dock-item" data-app="settings" title="系统设置"><img class="dock-icon-img" src="assets/icons/settings.webp" alt=""></div>
     <div class="dock-sep"></div>
     <div class="dock-item" data-app="trash" title="废纸篓"><img class="dock-icon-img" src="assets/icons/trash.webp" alt=""></div>
-    <div class="dock-item" data-app="report" title="报警"><div class="dock-icon dock-report">&#128680;</div></div>
+    <div class="dock-item" data-app="terminal" title="终端"><div class="dock-icon dock-term">&gt;_</div></div>
   </div>
   <div id="launchpad"><div class="lp-search"><input id="lp-q" placeholder="搜索"></div><div class="lp-grid"></div><div id="lp-empty" class="lp-empty hidden">没有找到应用</div></div>
   <div id="windows"></div>
   <div id="flash-overlay"></div>
   <div id="toast-wrap"></div>
   <div id="lightbox" class="hidden"><img id="lightbox-img" src=""><div id="lightbox-cap"></div><div class="lb-close" onclick="window.__closeLightbox()">&#10005;</div></div>
+</div>
+
+<!-- 崩溃/重启 -->
+<div id="screen-crash" class="screen hidden">
+  <div class="crash-inner">
+    <div class="crash-spinner"></div>
+    <div class="crash-title">这台电脑遇到了问题，需要重新启动。</div>
+    <div class="crash-sub">macOS 失联版 · 内核崩溃</div>
+    <div class="crash-glitch">别信。</div>
+  </div>
 </div>
 
 <!-- 结局 -->

@@ -56,6 +56,7 @@
     <div id="desktop-icons">
       <div class="d-icon" id="di-note" title="微信.txt"><div class="di-glyph">📄</div><div class="di-label">微信.txt</div></div>
       <div class="d-icon" id="di-mac" title="李铭泽的MacBook"><div class="di-glyph">💾</div><div class="di-label">李铭泽的MacBook</div></div>
+      <div class="d-icon hidden" id="di-letter" title="求救信.txt"><div class="di-glyph">📄</div><div class="di-label">求救信.txt</div></div>
     </div>
   </div>
   <div id="dock">
@@ -72,13 +73,23 @@
     <div class="dock-item" data-app="settings" title="系统设置"><img class="dock-icon-img" src="assets/icons/settings.webp" alt=""></div>
     <div class="dock-sep"></div>
     <div class="dock-item" data-app="trash" title="废纸篓"><img class="dock-icon-img" src="assets/icons/trash.webp" alt=""></div>
-    <div class="dock-item" data-app="report" title="报警"><div class="dock-icon dock-report">&#128680;</div></div>
+    <div class="dock-item" data-app="terminal" title="终端"><div class="dock-icon dock-term">&gt;_</div></div>
   </div>
   <div id="launchpad"><div class="lp-search"><input id="lp-q" placeholder="搜索"></div><div class="lp-grid"></div><div id="lp-empty" class="lp-empty hidden">没有找到应用</div></div>
   <div id="windows"></div>
   <div id="flash-overlay"></div>
   <div id="toast-wrap"></div>
   <div id="lightbox" class="hidden"><img id="lightbox-img" src=""><div id="lightbox-cap"></div><div class="lb-close" onclick="window.__closeLightbox()">&#10005;</div></div>
+</div>
+
+<!-- 崩溃/重启 -->
+<div id="screen-crash" class="screen hidden">
+  <div class="crash-inner">
+    <div class="crash-spinner"></div>
+    <div class="crash-title">这台电脑遇到了问题，需要重新启动。</div>
+    <div class="crash-sub">macOS 失联版 · 内核崩溃</div>
+    <div class="crash-glitch">别信。</div>
+  </div>
 </div>
 
 <!-- 结局 -->
@@ -110,8 +121,9 @@ var steps=[
  [8200, function(){ qa("9.rtwyzz-lei", function(){ return $("wc-chat").textContent.indexOf("晚安，李磊")>-1; }); contact("tuanzi"); }],
  [8800, function(){ qa("10.redpacket", function(){ return !!document.querySelector(".rp-bubble"); }); qa("10b.expired", function(){ return !!document.querySelector(".m-expired"); }); qa("10c.tuanzi-avatar", function(){ var im=document.querySelector('#wc-contacts [data-id="tuanzi"] img'); return im && im.src.indexOf("tuanzi.webp")>-1; }); }],
  [9600, function(){ contact("xibo"); var f=document.querySelector("#win-wechat .m-file"); if(f) f.click(); qa("10d.zip-downloaded", function(){ return !!window.STORY && document.querySelectorAll("#win-wechat .m-file").length>0; }); }],
- [12500, function(){ qa("11.safari-hist", function(){ return document.querySelectorAll(".hist-item").length>=5; }); var inp=$("safari-input"); if(inp){ inp.value="帅气鲨团子"; inp.dispatchEvent(new KeyboardEvent("keydown",{key:"Enter",bubbles:true})); } }],
- [10200, function(){ var txt=""; var rs=document.querySelectorAll(".srch-result"); for(var i=0;i<rs.length;i++) txt+=rs[i].textContent; qa("12.safari-search", function(){ return txt.indexOf("真大神")>-1 && txt.indexOf("无实名")>-1; }); dock("notes"); }],
+ [12500, function(){ dock("safari"); }],
+ [12900, function(){ qa("11.safari-hist", function(){ return document.querySelectorAll(".hist-item").length>=5; }); var inp=$("safari-input"); if(inp){ inp.value="帅气鲨团子"; inp.dispatchEvent(new KeyboardEvent("keydown",{key:"Enter",bubbles:true})); } }],
+ [13300, function(){ var txt=""; var rs=document.querySelectorAll(".srch-result"); for(var i=0;i<rs.length;i++) txt+=rs[i].textContent; qa("12.safari-search", function(){ return txt.indexOf("真大神")>-1 && txt.indexOf("无实名")>-1; }); dock("notes"); }],
  [10700, function(){ var it=tile(".notes-item","日记 · 7月24日"); if(it) it.click(); }],
  [11300, function(){ qa("13.notes-diary", function(){ var t=$("notes-body"); return t && t.textContent.indexOf("我不能再让她一个人")>-1; }); dock("photos"); }],
  [11900, function(){ var cells=document.querySelectorAll(".photo-cell"); for(var i=0;i<cells.length;i++){ if(cells[i].textContent.indexOf("1902")>-1){ cells[i].querySelector("img").click(); break; } } }],
@@ -137,10 +149,20 @@ var steps=[
  [21600, function(){ var b=document.querySelector(".voice-card .vc-btn"); if(b && !b.disabled) b.click(); }],
  [22100, function(){ qa("21.morse-decoded", function(){ return document.querySelector(".vc-result")!=null; }); dock("trash"); }],
  [22600, function(){ var rows=document.querySelectorAll(".trash-item"); for(var i=0;i<rows.length;i++){ if(rows[i].textContent.indexOf("她的资料")>-1){ var b=rows[i].querySelector("button"); if(b) b.click(); break; } } }],
- [23700, function(){ qa("22.trash-ev6", function(){ var t=$("win-trash").textContent; return t.indexOf("人设是假的")>-1; }); dock("report"); }],
- [23100, function(){ qa("23.report-collected", function(){ return document.querySelectorAll("#win-report .ev-item.collected").length>=8; }); var b=document.querySelector(".report-btn"); if(b && !b.disabled) b.click(); }],
- [24400, function(){ qa("24.true-ending", function(){ return $("ending-title").textContent.indexOf("我回来了")>-1; }); var e=$("screen-ending"); if(e) e.click(); }],
- [25200, function(){ qa("25.ending-img", function(){ var im=$("ending-img"); return im && im.style.opacity==="1" && im.src.indexOf("p-park")>-1; }); qa("25b.no-night-btn-true", function(){ var bs=document.querySelectorAll("#ending-actions button"); for(var i=0;i<bs.length;i++){ if(bs[i].textContent.indexOf("深夜")>-1) return false; } return true; }); }]
+ [23700, function(){ qa("22.trash-ev6", function(){ var t=$("win-trash").textContent; return t.indexOf("人设是假的")>-1; }); dock("terminal"); }],
+ [24200, function(){ qa("22b.terminal-open", function(){ return !!$("term-in"); }); enter("#term-in","sos"); }],
+ [27000, function(){ qa("23.reboot-stage2", function(){ return $("screen-crash").className.indexOf("hidden")===-1 || $("screen-boot").className.indexOf("hidden")===-1; }); }],
+ [33600, function(){ qa("23b.reboot-login", function(){ return $("screen-login").className.indexOf("hidden")===-1; }); enter("#login-pass","limingze"); }],
+ [35200, function(){ qa("23c.stage2-desktop", function(){ return $("screen-desktop").className.indexOf("hidden")===-1; }); dock("voice"); }],
+ [35800, function(){ var bs=document.querySelectorAll("#win-voice .vc-btn"); for(var i=0;i<bs.length;i++){ if(bs[i].textContent.indexOf("转写")>-1){ bs[i].click(); break; } } }],
+ [36200, function(){ qa("23d.voice2-transcribed", function(){ return $("win-voice").textContent.indexOf("文三路515")>-1; }); dock("terminal"); }],
+ [36600, function(){ enter("#term-in","515"); }],
+ [39400, function(){ qa("23e.reboot-stage3", function(){ return $("screen-crash").className.indexOf("hidden")===-1 || $("screen-boot").className.indexOf("hidden")===-1; }); }],
+ [46000, function(){ qa("23f.stage3-login", function(){ return $("screen-login").className.indexOf("hidden")===-1; }); enter("#login-pass","limingze"); }],
+ [47600, function(){ qa("23g.stage3-desktop-letter", function(){ return $("di-letter").className.indexOf("hidden")===-1; }); dock("terminal"); }],
+ [48000, function(){ enter("#term-in","报警 30.283,120.133"); }],
+ [50600, function(){ qa("24.true-ending", function(){ return $("ending-title").textContent.indexOf("我回来了")>-1; }); var e=$("screen-ending"); if(e) e.click(); }],
+ [51600, function(){ qa("25.ending-img", function(){ var im=$("ending-img"); return im && im.style.opacity==="1" && im.src.indexOf("p-park")>-1; }); qa("25b.no-night-btn-true", function(){ var bs=document.querySelectorAll("#ending-actions button"); for(var i=0;i<bs.length;i++){ if(bs[i].textContent.indexOf("深夜")>-1) return false; } return true; }); }]
 ];
 var t0=Date.now();
 setTimeout(function(){ var iv=setInterval(function(){ var el=Date.now()-t0; while(steps.length && steps[0][0]<=el){ steps.shift()[1](); } if(!steps.length){ clearInterval(iv); var pre=document.createElement("pre"); pre.id="qaout"; pre.textContent=window.__QA.join("\n"); document.body.appendChild(pre); } },120); },50);</script><script src="story.js"></script>

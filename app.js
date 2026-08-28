@@ -1,11 +1,11 @@
 (function(){
 "use strict";
 var $ = function(id){ return document.getElementById(id); };
-var S = { evidence:{}, decoded:false, pseudo:false, wins:{}, zTop:100, wxUnlocked:false, zipDownloaded:false, ending:null };
+var S = { evidence:{}, decoded:false, stage:1, stage2done:false, wins:{}, zTop:100, wxUnlocked:false, zipDownloaded:false, ending:null };
 var ST = window.STORY;
 var SAVE_KEY = "shilian_save_v1";
-function saveState(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify({ evidence:S.evidence, wx:S.wxUnlocked, dec:S.decoded, pseudo:S.pseudo, zip:S.zipDownloaded, ending:S.ending })); }catch(e){} }
-function loadState(){ try{ var s=JSON.parse(localStorage.getItem(SAVE_KEY)); if(s){ if(s.evidence){ for(var k in s.evidence) S.evidence[k]=1; } if(s.wx) S.wxUnlocked=true; if(s.dec) S.decoded=true; if(s.pseudo) S.pseudo=true; if(s.zip) S.zipDownloaded=true; if(s.ending) S.ending=s.ending; } }catch(e){} }
+function saveState(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify({ evidence:S.evidence, wx:S.wxUnlocked, dec:S.decoded, stage:S.stage, stage2done:S.stage2done, zip:S.zipDownloaded, ending:S.ending })); }catch(e){} }
+function loadState(){ try{ var s=JSON.parse(localStorage.getItem(SAVE_KEY)); if(s){ if(s.evidence){ for(var k in s.evidence) S.evidence[k]=1; } if(s.wx) S.wxUnlocked=true; if(s.dec) S.decoded=true; if(s.stage) S.stage=parseInt(s.stage,10)||1; else if(s.pseudo) S.stage=2; if(s.stage2done) S.stage2done=true; if(s.zip) S.zipDownloaded=true; if(s.ending) S.ending=s.ending; } }catch(e){} }
 
 /* ============ 通用 ============ */
 function el(html){ var d=document.createElement("div"); d.innerHTML=html; return d.firstElementChild; }
@@ -16,17 +16,14 @@ function playChime(){ try{ var a=new Audio("assets/startup.mp3"); a.volume=0.5; 
 function playWhisper(){ playTone(220, 0.5, 0.03, 0); playTone(180, 0.6, 0.02, 0.3); }
 
 /* ============ 证据 ============ */
-function mark(ev, msg){ if(S.evidence[ev]) return; S.evidence[ev]=1; saveState(); if(msg) toast(msg+" （证据 "+Object.keys(S.evidence).length+"/8）"); }
+function mark(ev, msg){ if(S.evidence[ev]) return; S.evidence[ev]=1; saveState(); if(msg) toast(msg); }
 
 loadState();
 
 /* ============ 开机 → 登录 ============ */
 function boot(){ var fill=$("boot-fill"); var p=0; var iv=setInterval(function(){ p+=3+Math.random()*4; if(p>=100){ p=100; clearInterval(iv); setTimeout(glitchBoot, 350); } fill.style.width=p+"%"; }, 60); }
 function glitchBoot(){ var g=$("boot-glitch"); g.style.opacity="0"; g.style.display="flex"; setTimeout(function(){ g.style.transition="opacity .08s"; g.style.opacity="1"; }, 30); setTimeout(function(){ g.style.opacity="0"; }, 300); setTimeout(function(){ g.style.display="none"; g.style.transition=""; $("screen-boot").classList.add("hidden"); $("screen-login").classList.remove("hidden"); setTimeout(function(){ $("login-pass").focus(); }, 300); }, 700); }
-function tryLogin(){ var v=$("login-pass").value.trim().toLowerCase(); if(v==="limingze"){ $("screen-login").classList.add("hidden"); $("screen-desktop").classList.remove("hidden"); playChime(); setTimeout(function(){ toast("欢迎回来，李铭泽。"); }, 600); setTimeout(function(){ toast("……不对。这是他的电脑。他一个月没回来了。", 3200); }, 2200); var evN=Object.keys(S.evidence).length;
-  if(evN>0){ setTimeout(function(){ toast("已恢复上次进度（证据 "+evN+"/8）", 3200); }, 4800); }
-  setTimeout(function(){ toast("先看看微信吧。", 3600); }, 4200);
-  if(!S.wxUnlocked){ setTimeout(function(){ toast("微信要密码。桌面上好像有个文件……", 3600); }, 6400); } } else { var e=$("login-err"); e.classList.remove("hidden"); var h=$("login-hint"); if(h) h.classList.remove("hidden"); var c=$("login-pass"); c.classList.remove("shake"); void c.offsetWidth; c.classList.add("shake"); c.select(); } }
+function tryLogin(){ var v=$("login-pass").value.trim().toLowerCase(); if(v==="limingze"){ $("screen-login").classList.add("hidden"); $("screen-desktop").classList.remove("hidden"); playChime(); showStageDesktop(); } else { var e=$("login-err"); e.classList.remove("hidden"); var h=$("login-hint"); if(h) h.classList.remove("hidden"); var c=$("login-pass"); c.classList.remove("shake"); void c.offsetWidth; c.classList.add("shake"); c.select(); } }
 
 /* ============ 窗口系统 ============ */
 function toggleLaunchpad(){
@@ -232,8 +229,8 @@ function buildWeChatCore(win, body){
     var hit=cList.querySelector('[data-id="'+id+'"]'); if(hit) hit.classList.add("active");
     main.querySelector("#wc-chathead").textContent = id==="group" ? c.name : ("与 "+c.name+" 的聊天");
     var chatEl=main.querySelector("#wc-chat"); renderChat(chatEl, msgs, id==="group"?{showName:true}:{});
-    if(id==="group" && S.pseudo){ chatEl.appendChild(el('<div class="m-sys">（8/25 00:00）铭哥 撤回了一条消息</div>')); }
-    if(id==="xibo" && S.pseudo){ chatEl.appendChild(el('<div class="m-sys">（8/25 00:00）汐泊诺思 撤回了一条消息</div>')); }
+    if(id==="group" && S.stage>=2){ chatEl.appendChild(el('<div class="m-sys">（8/25 00:00）铭哥 撤回了一条消息</div>')); }
+    if(id==="xibo" && S.stage>=2){ chatEl.appendChild(el('<div class="m-sys">（8/25 00:00）汐泊诺思 撤回了一条消息</div>')); }
   }
   function renderMoments(){
     main.querySelector("#wc-chathead").textContent="朋友圈";
@@ -336,17 +333,17 @@ function buildVoice(win, body){
     result.innerHTML=""; result.appendChild(el('<div class="vc-result">'+esc(vc.decode)+'</div>'));
     mark(2, "摩斯信号：救我 + 坐标。");
   });
-  if(S.pseudo){
-    var v2=ST.pseudo.voiceNote;
+  if(S.stage>=2){
+    var v2=ST.stage2.voiceNote;
     var c2=card(v2);
     c2.querySelector(".vc-d").style.color="#8e44ad";
     var rb=el('<button class="vc-btn">转写（自动）</button>'); c2.appendChild(rb);
     var r2=el('<div></div>'); c2.appendChild(r2);
-    rb.addEventListener("click", function(){ r2.innerHTML=""; r2.appendChild(el('<div class="vc-result">'+esc(v2.decode)+'</div>')); r2.appendChild(el('<div class="vc-ghost">'+esc(v2.ghost)+'</div>')); });
+    rb.addEventListener("click", function(){ r2.innerHTML=""; r2.appendChild(el('<div class="vc-result">'+esc(v2.decode)+'</div>')); r2.appendChild(el('<div class="vc-ghost">'+esc(v2.ghost)+'</div>')); if(!S.stage2done){ S.stage2done=true; saveState(); toast("文三路515……她在等他。", 3400); } });
   }
   body.appendChild(wrap);
   var au=c1.querySelector("audio");
-  au.addEventListener("ended", function(){ if(!S.pseudo){ c1.appendChild(el('<div class="vc-ghost">'+esc(vc.ghost)+'</div>')); playWhisper(); } });
+  au.addEventListener("ended", function(){ if(S.stage<2){ c1.appendChild(el('<div class="vc-ghost">'+esc(vc.ghost)+'</div>')); playWhisper(); } });
 }
 
 function buildNews(win, body){
@@ -419,9 +416,9 @@ function buildFinder(win, body){
     fileTile(f.psych.icon, f.psych.name, function(){
       content.className="finder-detail"; content.innerHTML="<h3>"+esc(f.psych.name)+'</h3><div class="fd-text">德州市XX医院 · 心理科\n就诊人：李铭泽（男，22岁）\n主诉：失眠、情绪低落、注意力下降，有退学念头\n建议：规律作息，适度运动，必要时复诊\n（医生签名字迹潦草）\n\n——半年前的事。他没跟任何人说。</div>';
     });
-    if(S.pseudo){
-      fileTile(ST.pseudo.file.icon, ST.pseudo.file.name, function(){
-        content.className="finder-detail"; content.innerHTML="<h3>"+esc(ST.pseudo.file.name)+'</h3><div class="fd-text">'+esc(ST.pseudo.file.desc)+'</div>';
+    if(S.stage>=2){
+      fileTile(ST.stage2.file.icon, ST.stage2.file.name, function(){
+        content.className="finder-detail"; content.innerHTML="<h3>"+esc(ST.stage2.file.name)+'</h3><div class="fd-text">'+esc(ST.stage2.file.desc)+'</div>';
       });
     }
   }
@@ -435,7 +432,7 @@ function buildFinder(win, body){
     });
     if(hiddenOn){
       fileTile(f.imgGhost.icon, f.imgGhost.name, function(){
-        content.className="finder-detail"; content.innerHTML="<h3>"+esc(f.imgGhost.name)+'</h3><img class="fd-img" src="'+f.imgGhost.src+'"><div class="fd-note">'+esc(f.imgGhost.desc)+(S.pseudo?"<br>"+esc(ST.pseudo.ghostImgNote):"")+'</div>';
+        content.className="finder-detail"; content.innerHTML="<h3>"+esc(f.imgGhost.name)+'</h3><img class="fd-img" src="'+f.imgGhost.src+'"><div class="fd-note">'+esc(f.imgGhost.desc)+(S.stage>=2?"<br>"+esc(ST.stage2.ghostImgNote):"")+'</div>';
       });
     }
   }
@@ -516,31 +513,143 @@ function buildTrash(win, body){
   });
 }
 
-function buildReport(win, body){
-  body.innerHTML="";
-  var shell=el('<div class="report-shell scroll"></div>');
-  shell.innerHTML='<h3>报警</h3><div class="report-sub">把找到的证据交给警方。\n\n冷静。\n\n（收集越多，警方越可能找到他。）</div>';
-  var list=el('<div></div>'); shell.appendChild(list);
-  var cnt=el('<div class="ev-count"></div>'); shell.appendChild(cnt);
-  var btn=el('<button class="report-btn">提交报警</button>'); btn.addEventListener("click", submitReport); shell.appendChild(btn);
-  function refresh(){
-    list.innerHTML=""; var n=0;
-    ST.evidence.forEach(function(ev){
-      var got=!!S.evidence[ev.id]; if(got) n++;
-      list.appendChild(el('<div class="ev-item'+(got?" collected":"")+'"><div class="ev-box">'+(got?"\u2713":"")+'</div><div class="ev-t'+(got?"":" miss")+'">'+esc(ev.t)+'</div></div>'));
-    });
-    cnt.innerHTML="已收集 "+n+" / "+ST.evidence.length+(S.pseudo?' <span style="color:#8e44ad">（深夜，电脑自己亮起来之后，你知道了更多。）</span>':"");
-    btn.disabled=(n===0);
+function rebootComputer(nextStage){
+  S.stage=nextStage; saveState();
+  for(var k in S.wins){ try{ closeWin(k); }catch(e){} }
+  $("launchpad").classList.remove("open");
+  ["screen-desktop","screen-login","screen-boot","screen-ending"].forEach(function(x){ var e=$(x); if(e) e.classList.add("hidden"); });
+  var c=$("screen-crash"); if(c) c.classList.remove("hidden");
+  setTimeout(function(){
+    if(c) c.classList.add("hidden");
+    $("screen-boot").classList.remove("hidden");
+    setTimeout(boot, 250);
+  }, 3400);
+}
+
+function showStageDesktop(){
+  $("screen-desktop").classList.remove("hidden");
+  refreshStageDesktop();
+  if(S.stage>=2){
+    setTimeout(function(){ toast("电脑自己重启了。", 3000); }, 800);
+    setTimeout(function(){ toast("……有些东西，好像不一样了。", 3200); }, 3000);
+    setTimeout(function(){ toast("去微信和访达看看。", 3200); }, 5600);
+  } else {
+    setTimeout(function(){ toast("欢迎回来，李铭泽。", 2600); }, 700);
+    setTimeout(function(){ toast("……不对。这是他的电脑。他一个月没回来了。", 3200); }, 2400);
+    setTimeout(function(){ toast("先看看微信吧。", 3200); }, 4400);
+    if(!S.wxUnlocked){ setTimeout(function(){ toast("微信要密码。桌面上好像有个文件……", 3200); }, 6600); }
   }
-  function submitReport(){
-    var n=Object.keys(S.evidence).length;
-    if(S.pseudo){ showEnding("true"); return; }
-    if(n<5) showEnding("bad");
-    else if(n<8) showEnding("open");
-    else showEnding("true");
+}
+
+function refreshStageDesktop(){
+  var dl=$("di-letter");
+  if(dl){ if(S.stage>=3) dl.classList.remove("hidden"); else dl.classList.add("hidden"); }
+  var dt=document.querySelector('[data-app="terminal"]');
+  if(dt){ if(S.stage>=1) dt.classList.remove("hidden"); }
+}
+
+function openLetter(){
+  var id="letter";
+  if(S.wins[id]){ S.wins[id].el.style.display="flex"; focusWin(id); return; }
+  var win=el('<div class="win" id="win-'+id+'"><div class="win-titlebar"><div class="traffic"><span class="tl-close"></span><span class="tl-min"></span><span class="tl-max"></span></div><div class="win-title">求救信.txt</div></div><div class="win-body"></div></div>');
+  win.style.width="480px"; win.style.height="340px"; win.style.left="300px"; win.style.top="150px";
+  $("windows").appendChild(win); S.wins[id]={el:win, body:win.querySelector(".win-body")};
+  win.querySelector(".win-titlebar").addEventListener("pointerdown", function(e){ focusWin(id); dragWin(win, e); });
+  win.querySelector(".tl-close").addEventListener("click", function(e){ e.stopPropagation(); closeWin(id); });
+  win.querySelector(".tl-min").addEventListener("click", function(e){ e.stopPropagation(); win.style.display="none"; });
+  win.querySelector(".tl-max").addEventListener("click", function(e){ e.stopPropagation(); });
+  win.addEventListener("mousedown", function(){ focusWin(id); });
+  var b=win.querySelector(".win-body");
+  b.style.cssText="padding:28px 32px;background:#fdfbf5;font-family:'Songti SC','SimSun',serif;font-size:15px;line-height:2.15;color:#333;overflow:auto;white-space:pre-wrap";
+  b.textContent=ST.stage3.letter;
+  focusWin(id);
+  toast("这是他自己写的求救信。", 2600);
+}
+
+function buildTerminal(win, body){
+  body.innerHTML='<div class="term-shell"><div class="term-out" id="term-out"></div><div class="term-in-row"><span class="term-prompt">limingze@MacBook ~ %</span><input id="term-in" autocomplete="off" spellcheck="false"></div></div>';
+  var out=body.querySelector("#term-out"), inp=body.querySelector("#term-in");
+  var hist=[], hi=-1;
+  function print(html){ var d=document.createElement("div"); d.className="term-line"; d.innerHTML=html; out.appendChild(d); out.scrollTop=out.scrollHeight; }
+  function line(t, cls){ print(esc(t)); }
+  function banner(){
+    print('<span class="term-dim">Last login: 8月25日 23:53 on ttys000</span>');
+    if(S.stage>=2) print('<span class="term-dim">（上一次登录：8月25日 23:53。但那不是刚才的你。）</span>');
+    if(S.stage>=3) print('<span class="term-dim">（命令控制台里，好像多了一样东西……）</span>');
   }
-  refresh();
-  body.appendChild(shell);
+  function help(){
+    line("可用指令：");
+    line("  help        查看帮助");
+    line("  clear       清屏");
+    line("  whoami      当前用户");
+    line("  date        当前日期");
+    line("  ls          列出文件");
+    if(S.stage>=3) line("  cat <文件>  查看文件内容");
+    if(S.stage===1 && S.decoded) line("  sos         发送求救信号（已解锁）");
+    if(S.stage===2 && S.stage2done) line("  515         前往文三路515（已解锁）");
+    if(S.stage>=3){ line("  报警        提交报警（可附坐标：报警 30.283,120.133）"); line("  shutdown    关闭电脑"); }
+    if(S.stage===1 && !S.decoded) print('<span class="term-dim">（提示：先解码语音备忘录里的摩斯信号。）</span>');
+    if(S.stage===2 && !S.stage2done) print('<span class="term-dim">（提示：先转写语音备忘录里那段新录音。）</span>');
+  }
+  function ls(){
+    if(S.stage>=3){ line("求救信.txt  她的资料-补充.txt  …"); }
+    else if(S.stage>=2){ line("她的资料-补充.txt  微信.txt  …"); }
+    else { line("微信.txt  行程规划.txt  图片  …"); }
+  }
+  function cat(name){
+    if(S.stage>=3 && String(name).indexOf("求救信")>-1){
+      print('<span class="term-letter">'+esc(ST.stage3.letter)+'</span>');
+      print('<span class="term-dim">（这封信……是你从没见过的。他留的。）</span>');
+      return;
+    }
+    line("cat: "+name+": No such file or directory");
+  }
+  function run(cmd){
+    var c=String(cmd||"").trim();
+    print('<span class="term-cmd">limingze@MacBook ~ % '+esc(c)+'</span>');
+    if(!c) return;
+    var lower=c.toLowerCase();
+    if(lower==="help") help();
+    else if(lower==="clear"){ out.innerHTML=""; banner(); }
+    else if(lower==="whoami") line("limingze");
+    else if(lower==="date") line("8月25日 23:53 星期二");
+    else if(lower==="ls") ls();
+    else if(lower.indexOf("cat ")==0) cat(c.slice(4).trim());
+    else if(lower==="sos"){
+      if(S.stage===1 && S.decoded){
+        line(ST.stage3.terminal.sosOut);
+        playWhisper(); flash(150);
+        setTimeout(function(){ rebootComputer(2); }, 2200);
+      } else if(S.stage===1){ line("坐标未知。先去语音备忘录解码。"); }
+      else line("没有这个指令。");
+    }
+    else if(lower==="515"){
+      if(S.stage===2 && S.stage2done){
+        line(ST.stage3.terminal.goto515Out);
+        playWhisper(); flash(120);
+        setTimeout(function(){ rebootComputer(3); }, 2200);
+      } else if(S.stage===2){ line("位置未知。先去转写那段新录音。"); }
+      else line("没有这个指令。");
+    }
+    else if(lower.indexOf("报警")===0){
+      if(S.stage<3){ line("报警功能不可用。"); return; }
+      var coord = c.indexOf("30.283")>-1 || c.indexOf("120.133")>-1;
+      line(coord ? "坐标已确认：N30.283, E120.133。正在提交……" : "正在提交报警……");
+      setTimeout(function(){ showEnding(coord?"true":"open"); }, 1600);
+    }
+    else if(lower==="shutdown"){
+      line("正在关机……");
+      setTimeout(function(){ showEnding("bad"); }, 1400);
+    }
+    else { line("zsh: command not found: "+c.split(/\s+/)[0]); }
+  }
+  banner();
+  inp.addEventListener("keydown", function(e){
+    if(e.key==="Enter"){ var v=inp.value; inp.value=""; if(v.trim()){ hist.push(v); hi=hist.length; } run(v); }
+    else if(e.key==="ArrowUp"){ if(hi>0){ hi--; inp.value=hist[hi]||""; } }
+    else if(e.key==="ArrowDown"){ if(hi<hist.length-1){ hi++; inp.value=hist[hi]||""; } else { hi=hist.length; inp.value=""; } }
+  });
+  setTimeout(function(){ inp.focus(); }, 120);
 }
 
 function buildSettings(win, body){
@@ -551,7 +660,7 @@ function buildSettings(win, body){
   function showAbout(){
     main.innerHTML='<div class="about-row"><div class="about-icon">\uD83D\uDCBB</div><div class="about-info"><div style="font-size:16px;font-weight:600;color:#1d1d1f">李铭泽的 MacBook</div><div style="font-size:13px;color:#666;margin-top:6px">芯片&nbsp; M5 PRO</div><div style="font-size:13px;color:#666">内存&nbsp;&nbsp; 128GB</div><div style="font-size:13px;color:#666">存储&nbsp;&nbsp; 8TB</div><div style="font-size:13px;color:#666">系统&nbsp;&nbsp; macOS 失联版 1.0</div></div></div>'+
       '<div style="font-size:12px;color:#999;margin-top:14px">序列号 &nbsp;MZ2026-0825-2353 &nbsp;·&nbsp; 这台电脑，是他走之前留下的。</div>'+
-      '<div style="margin-top:20px;border-top:1px solid #eee;padding-top:14px;font-size:13px;color:#555">当前进度：<br><br>· 证据 '+Object.keys(S.evidence).length+' / '+ST.evidence.length+'<br>· 微信：'+(S.wxUnlocked?"已解锁":"未解锁")+'<br>· 摩斯对照表：'+(S.decoded?"已找到":"未找到")+'<br>· '+(S.pseudo?"已进入深夜":"尚未进入深夜")+'</div>';
+      '<div style="margin-top:20px;border-top:1px solid #eee;padding-top:14px;font-size:13px;color:#555">当前进度：<br><br>· 章节：第 '+S.stage+' 幕 / 共 3 幕<br>· 微信：'+(S.wxUnlocked?"已解锁":"未解锁")+'<br>· 摩斯对照表：'+(S.decoded?"已找到":"未找到")+'<br>· 深夜录音：'+(S.stage2done?"已转写":"未转写")+'</div>';
   }
   function showStorage(){
     var total=8192; // 8TB in GB
@@ -573,9 +682,9 @@ function buildSettings(win, body){
   }
   function showReset(){
     main.innerHTML='<h3 style="font-size:15px;margin-bottom:6px">重置游戏</h3>'+
-      '<div style="font-size:12px;color:#999;margin-bottom:14px">将删除当前全部进度（证据、已解锁内容、深夜状态），回到最开始的开机画面。</div>'+
+      '<div style="font-size:12px;color:#999;margin-bottom:14px">将删除当前全部进度（章节、已解锁内容、深夜状态），回到最开始的开机画面。</div>'+
       '<button id="set-reset" style="background:#ff3b30;color:#fff;border:none;border-radius:6px;padding:9px 20px;font-size:13px;cursor:pointer">抹掉所有内容和设置</button>'+
-      '<div id="set-confirm" class="hidden" style="margin-top:14px;background:#fdf0ef;border:1px solid #ffd4d1;border-radius:8px;padding:12px 14px;font-size:13px;color:#8a2b24">确定要删除当前进度吗？所有线索、已解锁内容都将清空，回到最开始。<div style="margin-top:10px;display:flex;gap:10px"><button id="set-cancel" style="background:#fff;border:1px solid #ccc;border-radius:6px;padding:6px 16px;font-size:12px;cursor:pointer">取消</button><button id="set-do" style="background:#ff3b30;color:#fff;border:none;border-radius:6px;padding:6px 16px;font-size:12px;cursor:pointer">删除并重新开始</button></div></div>';
+      '<div id="set-confirm" class="hidden" style="margin-top:14px;background:#fdf0ef;border:1px solid #ffd4d1;border-radius:8px;padding:12px 14px;font-size:13px;color:#8a2b24">确定要删除当前进度吗？所有章节进度、已解锁内容都将清空，回到最开始。<div style="margin-top:10px;display:flex;gap:10px"><button id="set-cancel" style="background:#fff;border:1px solid #ccc;border-radius:6px;padding:6px 16px;font-size:12px;cursor:pointer">取消</button><button id="set-do" style="background:#ff3b30;color:#fff;border:none;border-radius:6px;padding:6px 16px;font-size:12px;cursor:pointer">删除并重新开始</button></div></div>';
     var rb=main.querySelector("#set-reset");
     var cf=main.querySelector("#set-confirm");
     rb.addEventListener("click", function(){ cf.classList.remove("hidden"); });
@@ -735,12 +844,13 @@ function showEnding(type){
     var nw=document.createElement("button");
     nw.textContent="深夜 23:53，电脑自己亮起";
     nw.addEventListener("click", function(){
-      S.pseudo=true; S.ending=null; saveState();
+      S.ending=null; saveState();
       $("screen-ending").classList.add("hidden");
       $("screen-desktop").classList.remove("hidden");
+      refreshStageDesktop();
       toast("电脑自己亮了起来。", 2500);
       setTimeout(function(){ toast("菜单栏的时间，还是 8 月 25 日 23:53。", 3000); }, 2000);
-      setTimeout(function(){ toast("群聊里，有一条撤回的消息。去看看吧。", 3200); }, 4600);
+      setTimeout(function(){ toast("去命令控制台，把坐标报上去。", 3200); }, 4600);
     });
     a.appendChild(nw);
   }
@@ -757,28 +867,30 @@ document.addEventListener("DOMContentLoaded", function(){
   var hasSave = false;
   try{ hasSave = !!localStorage.getItem(SAVE_KEY); }catch(e){}
   var pendingEnding = S.ending;
-  if(want==="desktop"){ $("screen-boot").classList.add("hidden"); $("screen-login").classList.add("hidden"); $("screen-desktop").classList.remove("hidden"); }
-  else if(want==="login"){ $("screen-boot").classList.add("hidden"); $("screen-login").classList.remove("hidden"); }
+  if(want==="desktop"){ $("screen-oobe").classList.add("hidden"); $("screen-boot").classList.add("hidden"); $("screen-login").classList.add("hidden"); $("screen-desktop").classList.remove("hidden"); }
+  else if(want==="login"){ $("screen-oobe").classList.add("hidden"); $("screen-boot").classList.add("hidden"); $("screen-login").classList.remove("hidden"); }
   else if(hasSave){
+    $("screen-oobe").classList.add("hidden");
     $("screen-boot").classList.add("hidden");
     $("screen-login").classList.add("hidden");
     $("screen-desktop").classList.remove("hidden");
-    var evN2 = Object.keys(S.evidence).length;
-    setTimeout(function(){ toast(evN2>0 ? ("已恢复上次进度（证据 "+evN2+"/8）") : "已恢复上次进度", 3000); }, 900);
+    setTimeout(function(){ toast("已恢复上次进度（第 "+S.stage+" 幕）", 3000); }, 900);
   } else if(!hasSave){
+    $("screen-oobe").classList.remove("hidden");
     $("screen-boot").classList.add("hidden");
     $("screen-login").classList.add("hidden");
     $("screen-desktop").classList.add("hidden");
-    $("screen-oobe").classList.remove("hidden");
-    var og=$("oobe-go");
-    if(og){ og.addEventListener("click", function(){ $("screen-oobe").classList.add("hidden"); $("screen-boot").classList.remove("hidden"); setTimeout(boot, 300); }); }
   } else {
     setTimeout(boot, 500);
   }
+  var og=$("oobe-go");
+  if(og){ og.addEventListener("click", function(){ $("screen-oobe").classList.add("hidden"); $("screen-boot").classList.remove("hidden"); setTimeout(boot, 300); }); }
   if(pendingEnding && hasSave){ setTimeout(function(){ showEnding(pendingEnding); }, 1200); }
   $("login-pass").addEventListener("keydown", function(e){ if(e.key==="Enter") tryLogin(); });
   var di=document.getElementById("di-note"); if(di) di.addEventListener("click", openDesktopNote);
   var di2=document.getElementById("di-mac"); if(di2) di2.addEventListener("click", function(){ openApp("finder"); });
+  var di3=document.getElementById("di-letter"); if(di3) di3.addEventListener("click", openLetter);
+  refreshStageDesktop();
   var dockItems=document.querySelectorAll(".dock-item");
   for(var i=0;i<dockItems.length;i++){
     (function(item){ item.addEventListener("click", function(){ var a=item.getAttribute("data-app"); if(a==="launchpad") toggleLaunchpad(); else openApp(a); }); })(dockItems[i]);
@@ -819,7 +931,7 @@ var APPS = {
   voice: { title:"语音备忘录", w:560, h:470, x:210, y:84, build:buildVoice },
   news: { title:"新闻", w:700, h:560, x:110, y:66, build:buildNews },
   trash: { title:"废纸篓", w:620, h:440, x:240, y:96, build:buildTrash },
-  report: { title:"报警", w:640, h:580, x:160, y:72, build:buildReport },
+  terminal: { title:"终端", w:680, h:460, x:150, y:80, build:buildTerminal },
   settings: { title:"系统设置", w:660, h:480, x:130, y:66, build:buildSettings }
 };
 
