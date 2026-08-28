@@ -1,11 +1,11 @@
 (function(){
 "use strict";
 var $ = function(id){ return document.getElementById(id); };
-var S = { evidence:{}, decoded:false, pseudo:false, wins:{}, zTop:100, wxUnlocked:false };
+var S = { evidence:{}, decoded:false, pseudo:false, wins:{}, zTop:100, wxUnlocked:false, zipDownloaded:false, ending:null };
 var ST = window.STORY;
 var SAVE_KEY = "shilian_save_v1";
-function saveState(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify({ evidence:S.evidence, wx:S.wxUnlocked, dec:S.decoded, pseudo:S.pseudo })); }catch(e){} }
-function loadState(){ try{ var s=JSON.parse(localStorage.getItem(SAVE_KEY)); if(s){ if(s.evidence){ for(var k in s.evidence) S.evidence[k]=1; } if(s.wx) S.wxUnlocked=true; if(s.dec) S.decoded=true; if(s.pseudo) S.pseudo=true; } }catch(e){} }
+function saveState(){ try{ localStorage.setItem(SAVE_KEY, JSON.stringify({ evidence:S.evidence, wx:S.wxUnlocked, dec:S.decoded, pseudo:S.pseudo, zip:S.zipDownloaded, ending:S.ending })); }catch(e){} }
+function loadState(){ try{ var s=JSON.parse(localStorage.getItem(SAVE_KEY)); if(s){ if(s.evidence){ for(var k in s.evidence) S.evidence[k]=1; } if(s.wx) S.wxUnlocked=true; if(s.dec) S.decoded=true; if(s.pseudo) S.pseudo=true; if(s.zip) S.zipDownloaded=true; if(s.ending) S.ending=s.ending; } }catch(e){} }
 
 /* ============ 通用 ============ */
 function el(html){ var d=document.createElement("div"); d.innerHTML=html; return d.firstElementChild; }
@@ -171,7 +171,7 @@ function renderChat(container, msgs, opt){
     else if(m.t==="img"){ var im=document.createElement("img"); im.className="m-img"; im.src=m.src; im.addEventListener("click",function(){ showLightbox(m.src,m.cap||""); }); bub.appendChild(im); }
     else if(m.t==="expired"){ var ex=document.createElement("img"); ex.className="m-expired"; ex.src="assets/expired-photo.png"; ex.addEventListener("click",function(e){ ghostExpired(e.currentTarget); }); bub.appendChild(ex); }
     else if(m.t==="loc"){ var lb=document.createElement("img"); lb.className="m-loc"; lb.src=m.src; lb.addEventListener("click",function(){ showLightbox(m.src,m.label||""); }); bub.appendChild(lb); }
-    else if(m.t==="file"){ bub.appendChild(el('<div class="m-file"><span class="f-icon">'+m.ficon+'</span><span class="f-name">'+esc(m.fname)+'</span></div>')); bub.querySelector(".m-file").addEventListener("click",function(){ toast("已下载到「下载」文件夹。去访达看看。"); }); }
+    else if(m.t==="file"){ bub.appendChild(el('<div class="m-file"><span class="f-icon">'+m.ficon+'</span><span class="f-name">'+esc(m.fname)+'</span></div>')); bub.querySelector(".m-file").addEventListener("click",function(){ if(!S.zipDownloaded){ S.zipDownloaded=true; saveState(); } toast("已下载到「下载」文件夹。去访达看看。"); }); }
     else if(m.t==="voice"){ bub.appendChild(el('<div class="m-voice"><span class="v-tri"></span><span class="v-dur">'+m.dur+' 秒</span></div><div class="v-trans">语音转文字：'+esc(m.trans)+'</div>')); bub.querySelector(".m-voice").addEventListener("click",function(){ var vEl=this; if(!vEl._n) vEl._n=0; vEl._n++; var au=vEl._audio||(vEl._audio=new Audio()); if(vEl._n===2 && m.srcB){ au.src=m.srcB; au.play(); toast("等等。这个声音……和刚才的不太一样。", 3600); } else { au.src=m.src; au.play(); } }); }
     else if(m.t==="sticker"){ bub.appendChild(el('<img class="m-sticker" src="'+m.src+'">')); }
     else if(m.t==="redpacket"){
@@ -389,7 +389,11 @@ function buildFinder(win, body){
   function clearFiles(){ content.innerHTML=""; content.className="finder-files"; }
   function fileTile(icon, name, fn){ var t=el('<div class="finder-file"><div class="ff-icon">'+icon+'</div><div class="ff-name">'+esc(name)+'</div></div>'); if(fn) t.addEventListener("click", fn); content.appendChild(t); return t; }
   function showRoot(){ pathEl.textContent="李铭泽的MacBook"; clearFiles(); fileTile("\uD83D\uDCC1","下载",showDownload); fileTile("\uD83D\uDCC4","文稿",showDocuments); fileTile("\uD83D\uDDBC\uFE0F","图片",showPictures); fileTile("\uD83D\uDD12","2026.07",showEncrypted); }
-  function showDownload(){ pathEl.textContent="下载"; clearFiles(); fileTile(f.zip.icon, f.zip.name, showZip); }
+  function showDownload(){
+    pathEl.textContent="下载"; clearFiles();
+    if(S.zipDownloaded){ fileTile(f.zip.icon, f.zip.name, showZip); }
+    else { content.appendChild(el('<div style="padding:20px;color:#999;font-size:13px;text-align:center;width:100%">下载文件夹是空的。<br><br>微信里，好像有人给他发过一个文件……</div>')); }
+  }
   function showZip(){ pathEl.textContent="下载 / 到时候再看"; clearFiles(); content.appendChild(el('<div style="padding:2px 10px 12px;font-size:11px;color:#8a6d3b;line-height:1.7">这个文件夹的名字，本来是留给他到杭州看的。\\n没想到，一个月后打开它的人是你。</div>')); f.zipFiles.forEach(function(zf){ fileTile(zf.icon, zf.name, function(){ showZipFile(zf); }); }); if(!S.zipSeen){ S.zipSeen=true; toast("「到时候再看」……原来是留给他自己的。", 2600); } }
   function showZipFile(zf){
     content.className="finder-detail"; content.innerHTML="<h3>"+esc(zf.name)+"</h3>";
@@ -715,6 +719,7 @@ function openXhsModal(p, idx, modal){
 /* ============ 结局 ============ */
 function showEnding(type){
   window.__curEnding=type; S.voicePlayed=false;
+  S.ending=type; saveState();
   ["screen-desktop","screen-login","screen-boot"].forEach(function(s){ $(s).classList.add("hidden"); });
   var e=ST.endings[type];
   $("screen-ending").classList.remove("hidden");
@@ -730,7 +735,7 @@ function showEnding(type){
     var nw=document.createElement("button");
     nw.textContent="深夜 23:53，电脑自己亮起";
     nw.addEventListener("click", function(){
-      S.pseudo=true; saveState();
+      S.pseudo=true; S.ending=null; saveState();
       $("screen-ending").classList.add("hidden");
       $("screen-desktop").classList.remove("hidden");
       toast("电脑自己亮了起来。", 2500);
@@ -751,6 +756,7 @@ document.addEventListener("DOMContentLoaded", function(){
   var want = window.__DEMO_SCREEN || qs.screen;
   var hasSave = false;
   try{ hasSave = !!localStorage.getItem(SAVE_KEY); }catch(e){}
+  var pendingEnding = S.ending;
   if(want==="desktop"){ $("screen-boot").classList.add("hidden"); $("screen-login").classList.add("hidden"); $("screen-desktop").classList.remove("hidden"); }
   else if(want==="login"){ $("screen-boot").classList.add("hidden"); $("screen-login").classList.remove("hidden"); }
   else if(hasSave){
@@ -759,9 +765,17 @@ document.addEventListener("DOMContentLoaded", function(){
     $("screen-desktop").classList.remove("hidden");
     var evN2 = Object.keys(S.evidence).length;
     setTimeout(function(){ toast(evN2>0 ? ("已恢复上次进度（证据 "+evN2+"/8）") : "已恢复上次进度", 3000); }, 900);
+  } else if(!hasSave){
+    $("screen-boot").classList.add("hidden");
+    $("screen-login").classList.add("hidden");
+    $("screen-desktop").classList.add("hidden");
+    $("screen-oobe").classList.remove("hidden");
+    var og=$("oobe-go");
+    if(og){ og.addEventListener("click", function(){ $("screen-oobe").classList.add("hidden"); $("screen-boot").classList.remove("hidden"); setTimeout(boot, 300); }); }
   } else {
     setTimeout(boot, 500);
   }
+  if(pendingEnding && hasSave){ setTimeout(function(){ showEnding(pendingEnding); }, 1200); }
   $("login-pass").addEventListener("keydown", function(e){ if(e.key==="Enter") tryLogin(); });
   var di=document.getElementById("di-note"); if(di) di.addEventListener("click", openDesktopNote);
   var di2=document.getElementById("di-mac"); if(di2) di2.addEventListener("click", function(){ openApp("finder"); });

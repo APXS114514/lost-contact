@@ -8,6 +8,21 @@
 </head>
 <body>
 
+<!-- OOBE（首启说明，仿 ningning） -->
+<div id="screen-oobe" class="screen">
+  <div class="oobe-card">
+    <div class="oobe-logo">💻</div>
+    <h1 class="oobe-title">《失联》</h1>
+    <div class="oobe-sub">深夜 23:53 · 一台寄错地址的电脑</div>
+    <div class="oobe-items">
+      <div class="oobe-item">🎧 建议佩戴耳机、在光线适宜的环境下游玩，时长约 30–60 分钟</div>
+      <div class="oobe-item">🔍 真相藏在日常的聊天、日记与文档里——仔细翻看电脑的每个角落</div>
+      <div class="oobe-item">👁️ 本作包含解谜、微恐怖与短剧情元素，共有三个结局</div>
+      <div class="oobe-item">⚖️ 本作剧情、人物、事件纯属虚构</div>
+    </div>
+    <button id="oobe-go">开 始</button>
+  </div>
+</div>
 <!-- 开机 -->
 <div id="screen-boot" class="screen">
   <svg class="apple-logo" viewBox="0 0 24 24" width="92" height="92"><path fill="#fff" d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
@@ -48,11 +63,12 @@
     <div class="dock-item" data-app="launchpad" title="启动台"><img class="dock-icon-img" src="assets/icons/launchpad.webp" alt=""></div>
     <div class="dock-sep"></div>
     <div class="dock-item" data-app="wechat" title="微信"><img class="dock-icon-img" src="assets/icons/wechat.webp" alt=""></div>
+    <div class="dock-item" data-app="xhs" title="小红书"><img class="dock-icon-img" src="assets/icons/xhs.webp" alt=""></div>
     <div class="dock-item" data-app="safari" title="Safari"><img class="dock-icon-img" src="assets/icons/safari.webp" alt=""></div>
     <div class="dock-item" data-app="notes" title="备忘录"><img class="dock-icon-img" src="assets/icons/notes.webp" alt=""></div>
     <div class="dock-item" data-app="photos" title="照片"><img class="dock-icon-img" src="assets/icons/photos.webp" alt=""></div>
     <div class="dock-item" data-app="voice" title="语音备忘录"><img class="dock-icon-img" src="assets/icons/voice.webp" alt=""></div>
-    <div class="dock-item" data-app="news" title="新闻"><div class="dock-icon dock-news">&#128250;</div></div>
+    <div class="dock-item" data-app="news" title="新闻"><img class="dock-icon-img" src="assets/icons/news.webp" alt=""></div>
     <div class="dock-item" data-app="settings" title="系统设置"><img class="dock-icon-img" src="assets/icons/settings.webp" alt=""></div>
     <div class="dock-sep"></div>
     <div class="dock-item" data-app="trash" title="废纸篓"><img class="dock-icon-img" src="assets/icons/trash.webp" alt=""></div>
@@ -74,8 +90,7 @@
   <div class="ending-hint" id="ending-hint">单击继续</div>
 </div>
 
-<script>try{localStorage.removeItem("shilian_save_v1");}catch(e){}</script><script>
-window.__QA=[];
+<script>try{localStorage.removeItem("shilian_save_v1");}catch(e){}</script><script>window.__QA=[];
 function qa(name, fn){ try{ window.__QA.push(name+"="+(fn()?"PASS":"FAIL")); }catch(e){ window.__QA.push(name+"=ERR:"+e.message); } }
 function $(id){ return document.getElementById(id); }
 function dock(app){ var d=document.querySelector('[data-app="'+app+'"]'); if(d) d.click(); }
@@ -83,51 +98,52 @@ function contact(id){ var c=document.querySelector('[data-id="'+id+'"]'); if(c) 
 function tile(rootSel, txt){ var els=document.querySelectorAll(rootSel); for(var i=0;i<els.length;i++){ if(els[i].textContent.indexOf(txt)>-1) return els[i]; } return null; }
 function enter(sel, val){ var el2=document.querySelector(sel); if(el2){ el2.value=val; el2.dispatchEvent(new KeyboardEvent("keydown",{key:"Enter",bubbles:true})); } }
 var steps=[
- [900, function(){ qa("1.boot-visible", function(){ return $("screen-boot").className.indexOf("hidden")===-1; }); }],
+ [400, function(){ qa("0.oobe-visible", function(){ return $("screen-oobe").className.indexOf("hidden")===-1; }); var og=$("oobe-go"); if(og) og.click(); }],
+ [1100, function(){ qa("1.boot-visible", function(){ return $("screen-boot").className.indexOf("hidden")===-1; }); }],
  [3200, function(){ qa("2.login-shown", function(){ return $("screen-login").className.indexOf("hidden")===-1; }); enter("#login-pass","abc"); setTimeout(function(){ qa("3.hint-after-wrong", function(){ return $("login-hint").className.indexOf("hidden")===-1; }); },300); }],
- [3900, function(){ enter("#login-pass","limingze"); }],
- [4700, function(){ qa("4.desktop-shown", function(){ return $("screen-desktop").className.indexOf("hidden")===-1; }); dock("wechat"); }],
- [5500, function(){ qa("5.wechat-gate", function(){ return !!$("wx-pwd"); }); var p=$("wx-pwd"); if(p){ p.value="limingze666"; var g=$("wx-go"); if(g) g.click(); } }],
- [6300, function(){ qa("6.wechat-unlocked", function(){ return document.querySelectorAll("#win-wechat .mbub").length>0; }); contact("group"); }],
- [7000, function(){ qa("7.group-name", function(){ return $("wc-chathead").textContent.indexOf("德意志民主共和国")>-1; }); var chat=$("wc-chat"); qa("7b.roy-line", function(){ return chat.textContent.indexOf("你他妈活着回来")>-1; }); qa("7c.rtwyzz-line", function(){ return chat.textContent.indexOf("Rtwyzz你倒是说句话")>-1; }); qa("7d.group-avatars", function(){ return document.querySelectorAll("#win-wechat .mav img").length>=4; }); contact("roy"); }],
+ [4500, function(){ enter("#login-pass","limingze"); }],
+ [5300, function(){ qa("4.desktop-shown", function(){ return $("screen-desktop").className.indexOf("hidden")===-1; }); dock("wechat"); }],
+ [6100, function(){ qa("5.wechat-gate", function(){ return !!$("wx-pwd"); }); var p=$("wx-pwd"); if(p){ p.value="limingze666"; var g=$("wx-go"); if(g) g.click(); } }],
+ [6900, function(){ qa("6.wechat-unlocked", function(){ return document.querySelectorAll("#win-wechat .mbub").length>0; }); contact("group"); }],
+ [9400, function(){ qa("7.group-name", function(){ return $("wc-chathead").textContent.indexOf("德意志民主共和国")>-1; }); var chat=$("wc-chat"); qa("7b.roy-line", function(){ return chat.textContent.indexOf("你他妈活着回来")>-1; }); qa("7c.rtwyzz-line", function(){ return chat.textContent.indexOf("Rtwyzz你倒是说句话")>-1; }); qa("7d.group-avatars", function(){ return document.querySelectorAll("#win-wechat .mav img").length>=4; }); contact("roy"); }],
  [7600, function(){ var chat=$("wc-chat"); qa("8.roy-lei", function(){ return chat.textContent.indexOf("李磊那货")>-1; }); qa("8b.no-explain", function(){ return chat.textContent.indexOf("只许我私聊里这么叫")===-1; }); contact("rtwyzz"); }],
  [8200, function(){ qa("9.rtwyzz-lei", function(){ return $("wc-chat").textContent.indexOf("晚安，李磊")>-1; }); contact("tuanzi"); }],
- [8800, function(){ qa("10.redpacket", function(){ return !!document.querySelector(".rp-bubble"); }); qa("10b.expired", function(){ return !!document.querySelector(".m-expired"); }); qa("10c.tuanzi-avatar", function(){ var im=document.querySelector('#wc-contacts [data-id="tuanzi"] img'); return im && im.src.indexOf("tuanzi.webp")>-1; }); dock("safari"); }],
- [9500, function(){ qa("11.safari-hist", function(){ return document.querySelectorAll(".hist-item").length>=5; }); var inp=$("safari-input"); if(inp){ inp.value="帅气鲨团子"; inp.dispatchEvent(new KeyboardEvent("keydown",{key:"Enter",bubbles:true})); } }],
- [10100, function(){ var txt=""; var rs=document.querySelectorAll(".srch-result"); for(var i=0;i<rs.length;i++) txt+=rs[i].textContent; qa("12.safari-search", function(){ return txt.indexOf("真大神")>-1 && txt.indexOf("无实名")>-1; }); dock("notes"); }],
+ [8800, function(){ qa("10.redpacket", function(){ return !!document.querySelector(".rp-bubble"); }); qa("10b.expired", function(){ return !!document.querySelector(".m-expired"); }); qa("10c.tuanzi-avatar", function(){ var im=document.querySelector('#wc-contacts [data-id="tuanzi"] img'); return im && im.src.indexOf("tuanzi.webp")>-1; }); }],
+ [9600, function(){ contact("xibo"); var f=document.querySelector("#win-wechat .m-file"); if(f) f.click(); qa("10d.zip-downloaded", function(){ return !!window.STORY && document.querySelectorAll("#win-wechat .m-file").length>0; }); }],
+ [12500, function(){ qa("11.safari-hist", function(){ return document.querySelectorAll(".hist-item").length>=5; }); var inp=$("safari-input"); if(inp){ inp.value="帅气鲨团子"; inp.dispatchEvent(new KeyboardEvent("keydown",{key:"Enter",bubbles:true})); } }],
+ [10200, function(){ var txt=""; var rs=document.querySelectorAll(".srch-result"); for(var i=0;i<rs.length;i++) txt+=rs[i].textContent; qa("12.safari-search", function(){ return txt.indexOf("真大神")>-1 && txt.indexOf("无实名")>-1; }); dock("notes"); }],
  [10700, function(){ var it=tile(".notes-item","日记 · 7月24日"); if(it) it.click(); }],
  [11300, function(){ qa("13.notes-diary", function(){ var t=$("notes-body"); return t && t.textContent.indexOf("我不能再让她一个人")>-1; }); dock("photos"); }],
  [11900, function(){ var cells=document.querySelectorAll(".photo-cell"); for(var i=0;i<cells.length;i++){ if(cells[i].textContent.indexOf("1902")>-1){ cells[i].querySelector("img").click(); break; } } }],
- [12400, function(){ qa("14.photo-ev5", function(){ return !!$("lightbox-img").src && $("lightbox-img").src.indexOf("p-museum")>-1; }); $("lightbox").classList.add("hidden"); dock("news"); }],
+ [13600, function(){ qa("14.photo-ev5", function(){ return !!$("lightbox-img").src && $("lightbox-img").src.indexOf("p-museum")>-1; }); $("lightbox").classList.add("hidden"); dock("news"); }],
  [13000, function(){ var n=tile(".n-item","网恋奔现"); if(n) n.click(); }],
- [13500, function(){ qa("15.news-ev7", function(){ var t=$("win-news").textContent; return t.indexOf("非法拘禁")>-1; }); dock("voice"); }],
+ [15300, function(){ qa("15.news-ev7", function(){ var t=$("win-news").textContent; return t.indexOf("非法拘禁")>-1; }); dock("voice"); }],
  [14100, function(){ qa("16.voice-card", function(){ return !!document.querySelector(".voice-card audio"); }); qa("16b.decode-locked-style", function(){ var b=document.querySelector(".voice-card .vc-btn"); return b && b.className.indexOf("vc-locked")>-1; }); dock("finder"); }],
  [14700, function(){ var t=tile(".finder-file","下载"); if(t) t.click(); }],
- [15100, function(){ var t=tile(".finder-file","到时候再看"); if(t) t.click(); }],
- [15500, function(){ qa("17b.zip-has-voice", function(){ return tile(".finder-file","语音-末尾")!=null; }); var t=tile(".finder-file","初中"); if(t) t.click(); }],
- [15900, function(){ qa("17.zip-photo-expired", function(){ var im=document.querySelector(".finder-detail img"); return im && im.src.indexOf("expired-photo")>-1; }); var back=document.getElementById("f-back"); if(back) back.click(); }],
- [16300, function(){ qa("17b2.zip-voice-wired", function(){ var zf=window.STORY.finder.zipFiles; for(var i=0;i<zf.length;i++){ if(zf[i].t==="voice" && zf[i].src && zf[i].src.indexOf("voice-xibo-final")>-1) return true; } return false; }); var t=tile(".finder-file","文稿"); if(t) t.click(); }],
- [16700, function(){ var t=tile(".finder-file","行程规划"); if(t) t.click(); }],
- [17100, function(){ qa("18.plan-ev4", function(){ return document.querySelector(".finder-detail").textContent.indexOf("文三路 515")>-1; }); var back=document.getElementById("f-back"); if(back) back.click(); }],
- [17500, function(){ var t=tile(".finder-file","2026.07"); if(t) t.click(); }],
- [17900, function(){ var p=$("enc-pwd"); if(p){ p.value="0725paofu"; var g=$("enc-go"); if(g) g.click(); } }],
- [18300, function(){ var t=tile(".finder-file","摩斯"); if(t) t.click(); }],
- [18700, function(){ qa("19.morse-table-decoded", function(){ return document.querySelector(".morse-table")!=null; }); var back=document.getElementById("f-back"); if(back) back.click(); }],
- [19100, function(){ var t=tile(".finder-file","2026.07"); if(t) t.click(); }],
- [19500, function(){ var t=tile(".finder-file","unknown.exe"); if(t) t.click(); }],
- [19900, function(){ var bs=document.querySelectorAll(".finder-detail button"); for(var i=0;i<bs.length;i++){ if(bs[i].textContent.indexOf("运行")>-1){ bs[i].click(); break; } } }],
- [20600, function(){ qa("20.unknown-exe", function(){ var w=$("win-unknown"); return w && w.querySelector(".win-title") && w.querySelector(".win-title").textContent.indexOf("unknown.exe")>-1; }); dock("voice"); }],
- [21000, function(){ var b=document.querySelector(".voice-card .vc-btn"); if(b && !b.disabled) b.click(); }],
- [21500, function(){ qa("21.morse-decoded", function(){ return document.querySelector(".vc-result")!=null; }); dock("trash"); }],
- [22000, function(){ var rows=document.querySelectorAll(".trash-item"); for(var i=0;i<rows.length;i++){ if(rows[i].textContent.indexOf("她的资料")>-1){ var b=rows[i].querySelector("button"); if(b) b.click(); break; } } }],
- [22500, function(){ qa("22.trash-ev6", function(){ var t=$("win-trash").textContent; return t.indexOf("人设是假的")>-1; }); dock("report"); }],
+ [15700, function(){ var t=tile(".finder-file","到时候再看"); if(t) t.click(); }],
+ [16100, function(){ qa("17b.zip-has-voice", function(){ return tile(".finder-file","语音-末尾")!=null; }); var t=tile(".finder-file","初中"); if(t) t.click(); }],
+ [16500, function(){ qa("17.zip-photo-expired", function(){ var im=document.querySelector(".finder-detail img"); return im && im.src.indexOf("expired-photo")>-1; }); var back=document.getElementById("f-back"); if(back) back.click(); }],
+ [16900, function(){ qa("17b2.zip-voice-wired", function(){ var zf=window.STORY.finder.zipFiles; for(var i=0;i<zf.length;i++){ if(zf[i].t==="voice" && zf[i].src && zf[i].src.indexOf("voice-xibo-final")>-1) return true; } return false; }); var t=tile(".finder-file","文稿"); if(t) t.click(); }],
+ [17300, function(){ var t=tile(".finder-file","行程规划"); if(t) t.click(); }],
+ [17700, function(){ qa("18.plan-ev4", function(){ return document.querySelector(".finder-detail").textContent.indexOf("文三路 515")>-1; }); var back=document.getElementById("f-back"); if(back) back.click(); }],
+ [18100, function(){ var t=tile(".finder-file","2026.07"); if(t) t.click(); }],
+ [18500, function(){ var p=$("enc-pwd"); if(p){ p.value="0725paofu"; var g=$("enc-go"); if(g) g.click(); } }],
+ [18900, function(){ var t=tile(".finder-file","摩斯"); if(t) t.click(); }],
+ [19300, function(){ qa("19.morse-table-decoded", function(){ return document.querySelector(".morse-table")!=null; }); var back=document.getElementById("f-back"); if(back) back.click(); }],
+ [19700, function(){ var t=tile(".finder-file","2026.07"); if(t) t.click(); }],
+ [20100, function(){ var t=tile(".finder-file","unknown.exe"); if(t) t.click(); }],
+ [20500, function(){ var bs=document.querySelectorAll(".finder-detail button"); for(var i=0;i<bs.length;i++){ if(bs[i].textContent.indexOf("运行")>-1){ bs[i].click(); break; } } }],
+ [21200, function(){ qa("20.unknown-exe", function(){ var w=$("win-unknown"); return w && w.querySelector(".win-title") && w.querySelector(".win-title").textContent.indexOf("unknown.exe")>-1; }); dock("voice"); }],
+ [21600, function(){ var b=document.querySelector(".voice-card .vc-btn"); if(b && !b.disabled) b.click(); }],
+ [22100, function(){ qa("21.morse-decoded", function(){ return document.querySelector(".vc-result")!=null; }); dock("trash"); }],
+ [22600, function(){ var rows=document.querySelectorAll(".trash-item"); for(var i=0;i<rows.length;i++){ if(rows[i].textContent.indexOf("她的资料")>-1){ var b=rows[i].querySelector("button"); if(b) b.click(); break; } } }],
+ [23700, function(){ qa("22.trash-ev6", function(){ var t=$("win-trash").textContent; return t.indexOf("人设是假的")>-1; }); dock("report"); }],
  [23100, function(){ qa("23.report-collected", function(){ return document.querySelectorAll("#win-report .ev-item.collected").length>=8; }); var b=document.querySelector(".report-btn"); if(b && !b.disabled) b.click(); }],
- [23800, function(){ qa("24.true-ending", function(){ return $("ending-title").textContent.indexOf("我回来了")>-1; }); var e=$("screen-ending"); if(e) e.click(); }],
- [24600, function(){ qa("25.ending-img", function(){ var im=$("ending-img"); return im && im.style.opacity==="1" && im.src.indexOf("p-park")>-1; }); qa("25b.no-night-btn-true", function(){ var bs=document.querySelectorAll("#ending-actions button"); for(var i=0;i<bs.length;i++){ if(bs[i].textContent.indexOf("深夜")>-1) return false; } return true; }); }]
+ [24400, function(){ qa("24.true-ending", function(){ return $("ending-title").textContent.indexOf("我回来了")>-1; }); var e=$("screen-ending"); if(e) e.click(); }],
+ [25200, function(){ qa("25.ending-img", function(){ var im=$("ending-img"); return im && im.style.opacity==="1" && im.src.indexOf("p-park")>-1; }); qa("25b.no-night-btn-true", function(){ var bs=document.querySelectorAll("#ending-actions button"); for(var i=0;i<bs.length;i++){ if(bs[i].textContent.indexOf("深夜")>-1) return false; } return true; }); }]
 ];
 var t0=Date.now();
-setTimeout(function(){ var iv=setInterval(function(){ var el=Date.now()-t0; while(steps.length && steps[0][0]<=el){ steps.shift()[1](); } if(!steps.length){ clearInterval(iv); var pre=document.createElement("pre"); pre.id="qaout"; pre.textContent=window.__QA.join("\n"); document.body.appendChild(pre); } },120); },50);
-</script><script src="story.js"></script>
+setTimeout(function(){ var iv=setInterval(function(){ var el=Date.now()-t0; while(steps.length && steps[0][0]<=el){ steps.shift()[1](); } if(!steps.length){ clearInterval(iv); var pre=document.createElement("pre"); pre.id="qaout"; pre.textContent=window.__QA.join("\n"); document.body.appendChild(pre); } },120); },50);</script><script src="story.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

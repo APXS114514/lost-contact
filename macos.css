@@ -455,3 +455,14 @@ html,body { width:100%; height:100%; overflow:hidden; font-family:"SFPro-Regular
 .xhs-m-bar { display:flex; align-items:center; gap:16px; margin-top:12px; padding-top:12px; border-top:1px solid #f0f0f0; font-size:13px; color:#666; }
 .xhs-cmt-input { flex:1; border:1px solid #eee; background:#f7f7f7; border-radius:16px; padding:6px 12px; font-size:12px; outline:none; }
 .xhs-share { color:#576b95; cursor:pointer; }
+
+/* ===== OOBE（仿 ningning 首启说明） ===== */
+#screen-oobe { background:#000; z-index:60; display:flex; align-items:center; justify-content:center; }
+.oobe-card { max-width:640px; width:92%; padding:44px 48px; box-sizing:border-box; color:#e8e8e8; text-align:center; }
+.oobe-logo { font-size:54px; margin-bottom:14px; }
+.oobe-title { font-size:30px; font-weight:300; letter-spacing:14px; margin-bottom:10px; }
+.oobe-sub { font-size:13px; color:#888; letter-spacing:3px; margin-bottom:34px; }
+.oobe-items { text-align:left; display:flex; flex-direction:column; gap:14px; margin-bottom:38px; }
+.oobe-item { font-size:14px; line-height:1.7; color:#c8c8c8; border-left:2px solid #333; padding-left:14px; }
+#oobe-go { background:#0078d7; color:#fff; border:none; border-radius:6px; padding:11px 60px; font-size:15px; letter-spacing:8px; cursor:pointer; }
+#oobe-go:hover { background:#1084ea; }
