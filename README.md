@@ -28,6 +28,16 @@
 
 > 温馨提示：第一次游玩建议不要打开 `story.js`，避免剧透。
 
+## 🎮 在线游玩
+
+点击这里直接在线体验：
+
+👉 [https://APXS114514.github.io/lost-contact/](https://APXS114514.github.io/lost-contact/)
+
+> 如果链接暂时无法访问，请先在 GitHub 仓库开启 GitHub Pages：
+> **Settings → Pages → Source → Deploy from a branch → Branch: main**，开启后即可通过该地址在线游玩。
+
+
 ---
 
 ## 技术栈
