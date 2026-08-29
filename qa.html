@@ -65,7 +65,7 @@
     <div class="dock-sep"></div>
     <div class="dock-item" data-app="wechat" title="微信"><img class="dock-icon-img" src="assets/icons/wechat.webp" alt=""></div>
     <div class="dock-item" data-app="xhs" title="小红书"><img class="dock-icon-img" src="assets/icons/xhs.webp" alt=""></div>
-    <div class="dock-item" data-app="safari" title="Safari"><img class="dock-icon-img" src="assets/icons/safari.webp" alt=""></div>
+    <div class="dock-item" data-app="safari" title="Google Chrome"><img class="dock-icon-img" src="assets/icons/chrome.webp" alt=""></div>
     <div class="dock-item" data-app="notes" title="备忘录"><img class="dock-icon-img" src="assets/icons/notes.webp" alt=""></div>
     <div class="dock-item" data-app="photos" title="照片"><img class="dock-icon-img" src="assets/icons/photos.webp" alt=""></div>
     <div class="dock-item" data-app="voice" title="语音备忘录"><img class="dock-icon-img" src="assets/icons/voice.webp" alt=""></div>
@@ -122,8 +122,8 @@ var steps=[
  [8800, function(){ qa("10.redpacket", function(){ return !!document.querySelector(".rp-bubble"); }); qa("10b.expired", function(){ return !!document.querySelector(".m-expired"); }); qa("10c.tuanzi-avatar", function(){ var im=document.querySelector('#wc-contacts [data-id="tuanzi"] img'); return im && im.src.indexOf("tuanzi.webp")>-1; }); }],
  [9600, function(){ contact("xibo"); var f=document.querySelector("#win-wechat .m-file"); if(f) f.click(); qa("10d.zip-downloaded", function(){ return !!window.STORY && document.querySelectorAll("#win-wechat .m-file").length>0; }); }],
  [12500, function(){ dock("safari"); }],
- [12900, function(){ qa("11.safari-hist", function(){ return document.querySelectorAll(".hist-item").length>=5; }); var inp=$("safari-input"); if(inp){ inp.value="帅气鲨团子"; inp.dispatchEvent(new KeyboardEvent("keydown",{key:"Enter",bubbles:true})); } }],
- [13300, function(){ var txt=""; var rs=document.querySelectorAll(".srch-result"); for(var i=0;i<rs.length;i++) txt+=rs[i].textContent; qa("12.safari-search", function(){ return txt.indexOf("真大神")>-1 && txt.indexOf("无实名")>-1; }); dock("notes"); }],
+ [12900, function(){ qa("11.google-home", function(){ return !!document.querySelector(".g-big-logo") && !!document.getElementById("safari-input"); }); var inp=$("safari-input"); if(inp){ inp.value="帅气鲨团子"; inp.dispatchEvent(new KeyboardEvent("keydown",{key:"Enter",bubbles:true})); } }],
+ [13300, function(){ var txt=""; var rs=document.querySelectorAll(".g-result"); for(var i=0;i<rs.length;i++) txt+=rs[i].textContent; qa("12.google-search", function(){ return txt.indexOf("真大神")>-1 && txt.indexOf("无实名")>-1; }); dock("notes"); }],
  [10700, function(){ var it=tile(".notes-item","日记 · 7月24日"); if(it) it.click(); }],
  [11300, function(){ qa("13.notes-diary", function(){ var t=$("notes-body"); return t && t.textContent.indexOf("我不能再让她一个人")>-1; }); dock("photos"); }],
  [11900, function(){ var cells=document.querySelectorAll(".photo-cell"); for(var i=0;i<cells.length;i++){ if(cells[i].textContent.indexOf("1902")>-1){ cells[i].querySelector("img").click(); break; } } }],

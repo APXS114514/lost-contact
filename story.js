@@ -317,30 +317,47 @@ window.STORY = {
     ]
   },  safari: {
     history: [
-      {t:"2026-08-26 00:00", title:"杭州市西湖区文三路 · 街景", url:"ditu.com/streetview/wensanlu", fav:"🗺", ghost:true},
-      {t:"2026-07-25 00:06", title:"德州到杭州 高铁票 改签", url:"12306.cn/order/revoke", fav:"🚆"},
-      {t:"2026-07-24 23:58", title:"杭州 网恋 失联 大学生", url:"baidu.com/s?q=杭州网恋失联", fav:"🔍", deleted:true},
-      {t:"2026-07-24 23:52", title:"网恋对象 从不肯视频 是骗子吗", url:"zhihu.com/question/8152", fav:"🔍"},
-      {t:"2026-07-24 23:47", title:"杀猪盘 特征", url:"baidu.com/s?q=杀猪盘特征", fav:"🔍"},
-      {t:"2026-06-15 02:31", title:"德州 心理咨询 预约", url:"dzdoc.com/psych/appt", fav:"🏥"},
-      {t:"2026-06-15 02:20", title:"大学生 挂科 想退学 怎么办", url:"zhihu.com/question/7011", fav:"🔍"}
+      {t:"2026-08-26 00:00", title:"杭州市西湖区文三路 · 街景", url:"ditu.com/streetview/wensanlu", fav:"🗺", ghost:true, page:"street"},
+      {t:"2026-07-25 00:06", title:"德州到杭州 高铁票 改签", url:"12306.cn/order/revoke", fav:"🚆", page:"train"},
+      {t:"2026-07-24 23:58", title:"杭州 网恋 失联 大学生", url:"baidu.com/s?q=杭州网恋失联", fav:"🔍", deleted:true, page:"search-missing"},
+      {t:"2026-07-24 23:52", title:"网恋对象 从不肯视频 是骗子吗", url:"zhihu.com/question/8152", fav:"🔍", page:"zhihu-video"},
+      {t:"2026-07-24 23:47", title:"杀猪盘 特征", url:"baidu.com/s?q=杀猪盘特征", fav:"🔍", page:"search-shazhupan"},
+      {t:"2026-06-15 02:31", title:"德州 心理咨询 预约", url:"dzdoc.com/psych/appt", fav:"🏥", page:"psych"},
+      {t:"2026-06-15 02:20", title:"大学生 挂科 想退学 怎么办", url:"zhihu.com/question/7011", fav:"🔍", page:"zhihu-dropout"}
     ],
     searchPresets: [
       {q:"帅气鲨团子", label:"搜索：帅气鲨团子", results:[
-        {t:"战绩页 · 无畏契约（国服）", u:"vanguard.qq.com/profile/12884021", s:"账号：帅气鲨团子 · 段位：钻石 · 最近登录：2026-07-26（之后再无登录记录）"},
-        {t:"贴吧回帖（2025-11）", u:"tieba.baidu.com/p/88213", s:"「这个号是挂吗，鲨团子？」 回复：「不是，真大神。」"},
-        {t:"搜索结果提示", u:"—", s:"未找到与「帅气鲨团子」相关的真实身份信息：无实名、无学校、无照片。该网名仅存在于游戏与社交平台。"}
+        {t:"战绩页 · 无畏契约（国服）", u:"vanguard.qq.com/profile/12884021", s:"账号：帅气鲨团子 · 段位：钻石 · 最近登录：2026-07-26（之后再无登录记录）", page:"vg-profile"},
+        {t:"贴吧回帖（2025-11）", u:"tieba.baidu.com/p/88213", s:"「这个号是挂吗，鲨团子？」 回复：「不是，真大神。」", page:"tieba-reply"},
+        {t:"搜索结果提示", u:"—", s:"未找到与「帅气鲨团子」相关的真实身份信息：无实名、无学校、无照片。该网名仅存在于游戏与社交平台。", page:"ghost-hint"}
       ]},
       {q:"李铭泽", label:"搜索：李铭泽", results:[
-        {t:"德州XX大学 · 电竞社团成员名单（2024届）", u:"edu.dzxx.cn/club/esports", s:"李铭泽 · 游戏ID：LMZ·铭 · 位置：决斗者"},
-        {t:"失踪人口信息（2026-08-20）", u:"police.gov.cn/missing/0820", s:"李铭泽，男，22岁，山东德州人，7月25日前往杭州后失联，家属已报警。"}
+        {t:"德州XX大学 · 电竞社团成员名单（2024届）", u:"edu.dzxx.cn/club/esports", s:"李铭泽 · 游戏ID：LMZ·铭 · 位置：决斗者", page:"esports-club"},
+        {t:"失踪人口信息（2026-08-20）", u:"police.gov.cn/missing/0820", s:"李铭泽，男，22岁，山东德州人，7月25日前往杭州后失联，家属已报警。", page:"missing-person"}
       ]},
       {q:"文三路", label:"搜索：文三路 街景", results:[
-        {t:"杭州市西湖区文三路 街景", u:"ditu.com/streetview/wensanlu", s:"打开街景视图…（红圈标出一栋楼，楼下有一个外卖柜和一家关门的店）"}
+        {t:"杭州市西湖区文三路 街景", u:"ditu.com/streetview/wensanlu", s:"打开街景视图…（红圈标出一栋楼，楼下有一个外卖柜和一家关门的店）", page:"street"}
+      ]},
+      {q:"解密关键信息", label:"搜索：解密关键信息", keywords:["解密","摩斯","坐标","对照表","证据","515","关键信息","报警","救我","文三路515"], file:"解密关键信息.pdf", results:[
+        {t:"解密关键信息汇总.pdf", u:"chrome://downloads", s:"摩斯电码对照表、语音解码坐标（N30.283, E120.133）、行程地址、她的资料、日记动机与报警指引——全部解密线索的汇总文件。", pdf:true}
       ]}
-    ]
+    ],
+    pages: {
+      "vg-profile": { url:"vanguard.qq.com/profile/12884021", title:"无畏契约国服 · 玩家主页", html:'<div class="web-card"><div class="web-site-head">无畏契约（VALORANT 国服）</div><div class="web-title">玩家主页：帅气鲨团子</div><div class="web-row"><b>段位</b> 钻石 2</div><div class="web-row"><b>最近登录</b> 2026-07-26 21:47</div><div class="web-row"><b>此后</b> 再无登录记录</div><div class="web-warn">账号状态：正常。但已经很久没有上线了。</div></div>' },
+      "tieba-reply": { url:"tieba.baidu.com/p/88213", title:"贴吧 · 回复", html:'<div class="web-card"><div class="web-site-head">百度贴吧</div><div class="web-title">主题：这个号是挂吗，鲨团子？</div><div class="web-row">「这个号是挂吗，鲨团子？」</div><div class="web-row">回复：「不是，真大神。」</div><div class="web-row small gray">发布于 2025-11 · 来自无畏契约吧</div><div class="web-warn">再往下翻，没有更多关于「帅气鲨团子」的帖子了。这个网名只存在于游戏与贴吧的回帖里。</div></div>' },
+      "ghost-hint": { url:"about:blank", title:"搜索结果提示", html:'<div class="web-card"><div class="web-site-head">Google 搜索</div><div class="web-title">未找到与「帅气鲨团子」相关的真实身份信息</div><div class="web-row">无实名、无学校、无照片。</div><div class="web-row">该网名仅存在于游戏与社交平台。</div><div class="web-warn ghost">她只存在于网线那头。</div></div>' },
+      "esports-club": { url:"edu.dzxx.cn/club/esports", title:"德州XX大学 · 电竞社团", html:'<div class="web-card"><div class="web-site-head">德州XX大学 · 学生社团</div><div class="web-title">电子竞技社团成员名单（2024届）</div><div class="web-table"><div class="web-tr"><span>李铭泽</span><span>游戏ID：LMZ·铭</span><span>位置：决斗者</span></div><div class="web-tr"><span>王XX</span><span>游戏ID：----</span><span>位置：哨兵</span></div><div class="web-tr gray"><span>…</span><span>名单共 24 人</span><span></span></div></div><div class="web-warn">他真实存在于这个世界。</div></div>' },
+      "missing-person": { url:"police.gov.cn/missing/0820", title:"失踪人口信息 · 李铭泽", html:'<div class="web-card police"><div class="web-site-head">公安 · 失踪人口信息平台</div><div class="web-title">寻人启事 · 李铭泽</div><div class="web-row"><b>姓名</b> 李铭泽</div><div class="web-row"><b>性别</b> 男</div><div class="web-row"><b>年龄</b> 22 岁</div><div class="web-row"><b>籍贯</b> 山东德州</div><div class="web-row"><b>失联时间</b> 2026年7月25日前往杭州后失联，7月26日手机失去信号</div><div class="web-row"><b>已报案</b> 家属已报警</div><div class="web-warn red">如有线索请联系德州 / 杭州警方。</div></div>' },
+      "street": { url:"ditu.com/streetview/wensanlu", title:"杭州市西湖区文三路 · 街景", html:'<div class="web-card"><div class="web-site-head">地图 · 街景视图</div><div class="web-title">杭州市西湖区文三路</div><div class="web-img-wrap"><img src="assets/p-skyline.webp" style="width:100%;border-radius:8px"><div class="red-circle"></div></div><div class="web-row small gray">红圈里那栋楼——和照片文件夹里 7/25 夜里拍的是同一栋。</div><div class="web-warn ghost">这条记录不该存在。他 7/26 就关机了。</div></div>' },
+      "train": { url:"12306.cn/order/revoke", title:"12306 · 订单详情", html:'<div class="web-card"><div class="web-site-head">铁路12306</div><div class="web-title">订单详情</div><div class="web-row"><b>车次</b> G189 德州东 → 杭州东</div><div class="web-row"><b>日期</b> 2026-07-25</div><div class="web-row"><b>时间</b> 07:52 → 12:41</div><div class="web-row"><b>状态</b> 已改签（原订单已作废）</div><div class="web-warn">改签到了更早的一班。他是真的要去。</div></div>' },
+      "search-missing": { url:"baidu.com/s?q=杭州网恋失联大学生", title:"搜索：杭州 网恋 失联 大学生", html:'<div class="web-card"><div class="web-site-head">百度搜索</div><div class="web-title">「杭州 网恋 失联 大学生」</div><div class="web-row">- 杭州网恋奔现失联事件引关注（2026-08）</div><div class="web-row">- 警惕网恋杀猪盘：多人被骗至指定地点</div><div class="web-row gray small">这条搜索记录，是他自己删掉又重新收藏的。</div></div>' },
+      "zhihu-video": { url:"zhihu.com/question/8152", title:"知乎 · 网恋对象从不肯视频", html:'<div class="web-card"><div class="web-site-head">知乎</div><div class="web-title">网恋对象从不肯视频，是骗子吗？</div><div class="web-row">回答 128 · 关注 3421</div><div class="web-row">高赞：不肯视频 = 90% 有鬼。剩下的 10%，可能比你想的更复杂。</div><div class="web-warn">他看这条的时候，在想什么？</div></div>' },
+      "search-shazhupan": { url:"baidu.com/s?q=杀猪盘特征", title:"搜索：杀猪盘 特征", html:'<div class="web-card"><div class="web-site-head">百度搜索</div><div class="web-title">「杀猪盘 特征」</div><div class="web-row">- 特征一：网恋、声音好听、从不视频</div><div class="web-row">- 特征二：声称自己是学生/异地</div><div class="web-row">- 特征三：涉及转账汇款</div><div class="web-warn">他一条条对着看。她一条都不占——除了前两条。</div></div>' },
+      "psych": { url:"dzdoc.com/psych/appt", title:"德州 · 心理咨询预约", html:'<div class="web-card"><div class="web-site-head">德州在线 · 预约挂号</div><div class="web-title">德州市XX医院 · 心理科</div><div class="web-row"><b>就诊人</b> 李铭泽</div><div class="web-row"><b>预约时间</b> 2026-03-12</div><div class="web-row"><b>状态</b> 已完成</div><div class="web-warn">半年前的事。他没跟任何人说。</div></div>' },
+      "zhihu-dropout": { url:"zhihu.com/question/7011", title:"知乎 · 挂科想退学怎么办", html:'<div class="web-card"><div class="web-site-head">知乎</div><div class="web-title">大学生挂科、想退学，怎么办？</div><div class="web-row">回答 2456 · 关注 19023</div><div class="web-row">高赞：别急着退。先找个人聊聊，哪怕只是网上认识的。</div><div class="web-warn">那个深夜陪他聊的人……是她。</div></div>' }
+    }
   },
-  notes: [
+    notes: [
     {id:"plan", title:"行程规划", date:"7月24日", text:"杭州行程 7.25\nG189 德州东 07:52 → 杭州东 12:41\n酒店：西湖区文三路 XX 酒店（团子订的，报她名字）\n她说在文三路 515 号那栋楼下等我\n16 号出口，别走错\n回来车票先不买，看她安排"},
     {id:"psych", title:"心理科就诊记录", date:"2026年3月12日", text:"德州市XX医院 · 心理科\n就诊人：李铭泽（男，22岁）\n主诉：失眠、情绪低落、注意力下降，有退学念头\n建议：规律作息，适度运动，必要时复诊\n（医生签名字迹潦草）\n\n——这是半年前的事。那时候他没跟任何人说。"},
     {id:"d1", title:"日记 · 7月10日", date:"7月10日", text:"团子说她想见我。她说她一个人太久了。我也是。\n其实我早就想去了，只是怕。怕见面就散了，怕网线那头不是我想的那个人。\n但她说酒店她订，说只要我人到。\n我买了票。"},
@@ -403,7 +420,7 @@ window.STORY = {
       {title:"三伏天减脂食谱，不节食不饿肚子", body:"减脂期间的饮食记录，低卡高蛋白。早餐燕麦+鸡蛋，午餐鸡胸肉+糙米，晚餐轻食沙拉。附详细热量表。", imgs:["xhs/xhs19_png.webp"], author:"五十妞爱养生", avatar:"xhs/xhs37.webp", likes:21000, cat:"美食", tags:["减脂","食谱"], date:"2026-07-08"},
       {title:"带爷爷坐了趟高铁，他开心得像孩子", body:"带爷爷第一次坐高铁，爷爷在南站拍了好多照片，说这辈子没见过这么大的站，一定要再来一次。", imgs:["xhs/xhs16_png.webp"], author:"唐安妮", avatar:"xhs/xhs16_png.webp", likes:27000, cat:"旅行", tags:["高铁","家人"], date:"2026-07-11"},
       {title:"周末动物园一日游，小动物们太治愈了", body:"周末带小朋友去了动物园，长颈鹿、大象、小猴子都超可爱，强烈推荐！", imgs:["f-zoo.webp"], author:"喵呜不吃鱼", avatar:"喵", likes:5200, cat:"萌宠", tags:["动物园","亲子"], date:"2026-07-13"},
-      {title:"水族馆拍照也太出片了！附机位攻略", body:"蓝色背景随便拍都好看，建议穿浅色衣服。分享几个绝佳机位，姐妹们冲！", imgs:["f-aquarium.webp","f-aquarium2.webp"], author:"小鹿乱撞", avatar:"鹿", likes:8900, cat:"拍照", tags:["水族馆","拍照"], date:"2026-07-15"},
+      {title:"水族馆拍照也太出片了！附机位攻略", body:"蓝色背景随便拍都好看，建议穿浅色衣服。分享几个绝佳机位，姐妹们冲！", imgs:["f-aquarium.webp","f-aquarium2.webp"], author:"小鹿乱撞", avatar:"xhs/xhs-xsl-avatar.webp", likes:8900, cat:"拍照", tags:["水族馆","拍照"], date:"2026-07-15"},
       {title:"夏天的野餐，和朋友们一起吧", body:"树荫、草地、零食和笑声，夏天就该这样过。", imgs:["f-picnic.webp"], author:"半糖去冰", avatar:"xhs/xhs24.webp", likes:6400, cat:"日常", tags:["野餐","夏天"], date:"2026-07-17"},
       {title:"这家店我吃了十年，终于鼓起勇气写测评", body:"味道没变，老板没变，变的只有价格。推荐招牌菜，附菜单。", imgs:["xhs/xhs20.webp"], author:"干饭王", avatar:"xhs/xhs20.webp", likes:15000, cat:"美食", tags:["探店","老店"], date:"2026-07-19"},
       {title:"姐妹们小心！网恋杀猪盘亲身经历，别再上当了", plotHint:"群里 AP 说的杀猪盘，原来真的有人遇到过。……她说得，好像她。", body:"跟一个网友聊了三个月，声音好听，从不肯视频，自称还在上学。要不是我留了个心眼，差点就被骗了。提醒所有姐妹：不肯视频的、总在深夜找你的、说自己是学生的，都要警惕。", imgs:["xhs/xhs13.webp"], author:"清醒的雯", avatar:"xhs/xhs31.webp", likes:45000, cat:"情感", tags:["杀猪盘","网恋"], date:"2026-07-21", plot:true},

@@ -23,7 +23,7 @@ loadState();
 /* ============ 开机 → 登录 ============ */
 function boot(){ var fill=$("boot-fill"); var p=0; var iv=setInterval(function(){ p+=3+Math.random()*4; if(p>=100){ p=100; clearInterval(iv); setTimeout(glitchBoot, 350); } fill.style.width=p+"%"; }, 60); }
 function glitchBoot(){ var g=$("boot-glitch"); g.style.opacity="0"; g.style.display="flex"; setTimeout(function(){ g.style.transition="opacity .08s"; g.style.opacity="1"; }, 30); setTimeout(function(){ g.style.opacity="0"; }, 300); setTimeout(function(){ g.style.display="none"; g.style.transition=""; $("screen-boot").classList.add("hidden"); $("screen-login").classList.remove("hidden"); setTimeout(function(){ $("login-pass").focus(); }, 300); }, 700); }
-function tryLogin(){ var v=$("login-pass").value.trim().toLowerCase(); if(v==="limingze"){ $("screen-login").classList.add("hidden"); $("screen-desktop").classList.remove("hidden"); playChime(); showStageDesktop(); } else { var e=$("login-err"); e.classList.remove("hidden"); var h=$("login-hint"); if(h) h.classList.remove("hidden"); var c=$("login-pass"); c.classList.remove("shake"); void c.offsetWidth; c.classList.add("shake"); c.select(); } }
+function tryLogin(){ var v=$("login-pass").value.trim().toLowerCase(); if(v==="limingze"){ setScreen("screen-login", true); setScreen("screen-desktop", false); playChime(); showStageDesktop(); } else { var e=$("login-err"); e.classList.remove("hidden"); var h=$("login-hint"); if(h) h.classList.remove("hidden"); var c=$("login-pass"); c.classList.remove("shake"); void c.offsetWidth; c.classList.add("shake"); c.select(); } }
 
 /* ============ 窗口系统 ============ */
 function toggleLaunchpad(){
@@ -34,7 +34,7 @@ function toggleLaunchpad(){
     var items=[
       {id:"wechat", name:"微信", icon:"assets/icons/wechat.webp"},
       {id:"xhs", name:"小红书", icon:"assets/icons/xhs.webp"},
-      {id:"safari", name:"Safari", icon:"assets/icons/safari.webp"},
+      {id:"safari", name:"Google Chrome", icon:"assets/icons/chrome.webp"},
       {id:"notes", name:"备忘录", icon:"assets/icons/notes.webp"},
       {id:"photos", name:"照片", icon:"assets/icons/photos.webp"},
       {id:"voice", name:"语音备忘录", icon:"assets/icons/voice.webp"},
@@ -250,37 +250,282 @@ function buildWeChatCore(win, body){
 
 function buildSafari(win, body){
   var sh=ST.safari;
-  body.innerHTML='<div class="safari-bar"><span class="safari-nav">\u2039</span><span class="safari-nav">\u203A</span><input class="safari-url" id="safari-input" placeholder="搜索或输入网址" value=""></div><div class="safari-main"><div id="safari-content" class="safari-page"></div></div>';
-  var input=body.querySelector("#safari-input"); var content=body.querySelector("#safari-content");
-  function showHistory(){
-    content.className="safari-page scroll"; content.innerHTML="<h3 style=\"margin-bottom:10px\">历史记录</h3>";
-    sh.history.forEach(function(h){
-      var markTxt = (h.deleted?' <span style="color:#c0392b;font-size:11px">（已被删除，又重新收藏）</span>':"") + (h.ghost?' <span style="color:#8e44ad;font-size:11px">（这条不该存在）</span>':"");
-      var item=el('<div class="hist-item"><div class="hist-fav">'+h.fav+'</div><div><div class="hist-t">'+esc(h.title)+markTxt+'</div><div class="hist-u">'+esc(h.url)+' · '+h.t+'</div></div></div>');
-      item.addEventListener("click", function(){ if(h.ghost) showStreetView(); else content.innerHTML="<h3>"+esc(h.title)+'</h3><p style="color:#999">（历史记录条目 · 演示）</p>'; });
-      content.appendChild(item);
+  var SUGGEST=['帅气鲨团子','李铭泽','文三路','解密关键信息','杀猪盘 特征','杭州 网恋 失联','高铁票 改签','心理咨询'];
+  var goLogo='<span style="font-weight:700;font-size:16px;letter-spacing:-.5px;user-select:none"><span style="color:#4285F4">G</span><span style="color:#EA4335">o</span><span style="color:#FBBC05">o</span><span style="color:#4285F4">g</span><span style="color:#34A853">l</span><span style="color:#EA4335">e</span></span>';
+
+  body.innerHTML='<div class="chrome-shell">'+
+    '<div class="chrome-toolbar">'+
+      '<button class="chrome-btn g-back" title="后退">‹</button>'+
+      '<button class="chrome-btn" title="前进">›</button>'+
+      '<button class="chrome-btn g-reload" title="重新加载">↻</button>'+
+      '<button class="chrome-btn g-home-btn" title="主页">⌂</button>'+
+      '<div class="g-address-bar"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#5f6368" stroke-width="2" style="flex-shrink:0"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg><span id="g-address-text" class="g-address-text">www.google.com</span></div>'+
+      '<button class="chrome-btn" title="书签">★</button>'+
+      '<button class="chrome-btn" title="菜单">⋮</button>'+
+    '</div>'+
+    '<div class="safari-main g-main">'+
+      '<div id="g-home-view" class="g-view g-home">'+
+        '<div class="g-big-logo"><span style="color:#4285F4">G</span><span style="color:#EA4335">o</span><span style="color:#FBBC05">o</span><span style="color:#4285F4">g</span><span style="color:#34A853">l</span><span style="color:#EA4335">e</span></div>'+
+        '<div class="g-search-box">'+
+          '<svg class="g-search-ico" viewBox="0 0 24 24" fill="none" stroke="#9aa0a6" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>'+
+          '<input id="safari-input" class="g-search-input" autocomplete="off" spellcheck="false" placeholder="">'+
+          '<svg class="g-mic" viewBox="0 0 24 24" fill="none" stroke="#4285F4" stroke-width="1.5"><path d="M12 2a3 3 0 0 1 3 3v7a3 3 0 0 1-6 0V5a3 3 0 0 1 3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg>'+
+          '<svg class="g-cam" viewBox="0 0 24 24" fill="none" stroke="#4285F4" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>'+
+          '<div id="g-suggest" class="g-suggest"></div>'+
+        '</div>'+
+        '<div class="g-btns"><button id="g-search-btn">Google 搜索</button><button id="g-lucky-btn">手气不错</button></div>'+
+        '<div id="g-history-strip" class="g-history-strip"></div>'+
+        '<div class="g-home-foot">提供者：济南市XX大学信息与电子工程学院 · 隐私 · 条款</div>'+
+      '</div>'+
+      '<div id="g-result-view" class="g-view g-results">'+
+        '<div class="g-nav"><div class="g-nav-logo">'+goLogo+'</div>'+
+          '<div class="g-nav-search"><input id="g-nav-input" class="g-search-input" autocomplete="off" spellcheck="false" placeholder=""><div id="g-nav-suggest" class="g-suggest"></div></div>'+
+          '<div class="g-nav-right"><button class="g-login">登录</button></div>'+
+        '</div>'+
+        '<div class="g-result-body">'+
+          '<div class="g-result-tabs"><span class="g-tab active">全部</span><span class="g-tab">图片</span><span class="g-tab">新闻</span><span class="g-tab">地图</span><span class="g-tab">更多 ▾</span><span class="g-tab g-tools">搜索工具</span></div>'+
+          '<div id="g-stats" class="g-stats"></div>'+
+          '<div id="g-result-list" class="g-result-list"></div>'+
+        '</div>'+
+      '</div>'+
+      '<div id="g-file-view" class="g-view g-file" style="display:none">'+
+        '<div class="g-nav"><div class="g-nav-logo">'+goLogo+'</div>'+
+          '<div class="g-nav-search"><input id="g-nav-input2" class="g-search-input" autocomplete="off" spellcheck="false" placeholder=""><div id="g-nav-suggest2" class="g-suggest"></div></div>'+
+          '<div class="g-nav-right"><button class="g-login">登录</button></div>'+
+        '</div>'+
+        '<div class="g-file-body">'+
+          '<div class="g-file-card">'+
+            '<div class="g-file-icon"><svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="#e8584b" stroke-width="1.6"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="13" y2="17"/></svg></div>'+
+            '<div class="g-file-name">解密关键信息.pdf</div>'+
+            '<div class="g-file-meta">PDF 文档 · 177 KB · chrome://downloads</div>'+
+            '<button id="btn-download-info" class="g-dl-btn"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> 下载解密关键信息</button>'+
+            '<div id="g-dl-flyout" class="g-dl-flyout">'+
+              '<div class="g-dl-title">下载内容</div>'+
+              '<div class="g-dl-row"><div class="g-dl-icon">📄</div><div><div class="g-dl-fname">解密关键信息.pdf</div><div class="g-dl-status" id="g-dl-status"></div><div class="g-dl-bar" id="g-dl-bar"><div class="g-dl-fill" id="g-dl-fill"></div></div></div></div>'+
+            '</div>'+
+            '<div class="g-file-preview">'+
+              '<div class="g-file-preview-h">文档预览</div>'+
+              '<div class="g-file-preview-body">'+
+                '<h4>《失联》解密关键信息汇总</h4>'+
+                '<p>整理自李铭泽的 MacBook · 8月25日 23:53 深夜</p>'+
+                '<b>一、摩斯电码对照表</b>'+
+                '<p>A .- &nbsp; B -... &nbsp; C -.-. &nbsp; D -.. &nbsp; E . &nbsp; F ..-. &nbsp; G --. &nbsp; H .... &nbsp; I .. &nbsp; J .---</p>'+
+                '<b>二、语音解码</b>'+
+                '<p>「救我」重复 3 遍 · 坐标 <b>N30.283, E120.133</b>（≈ 文三路 515 号一带）</p>'+
+                '<b>三、行程与地址</b>'+
+                '<p>G189 德州东 07:52 → 杭州东 12:41 · 文三路 515 号那栋楼下等我</p>'+
+                '<b>四、她的资料</b>'+
+                '<p>人设是假的。她本人是真的。</p>'+
+                '<b>五、报警指引</b>'+
+                '<p>报警时请附上摩斯坐标：<b>N30.283, E120.133</b></p>'+
+              '</div>'+
+            '</div>'+
+          '</div>'+
+        '</div>'+
+      '</div>'+
+      '<div id="g-page-view" class="g-view g-page" style="display:none">'+
+        '<div class="g-nav"><div class="g-nav-logo">'+goLogo+'</div>'+
+          '<div class="g-nav-search"><input id="g-nav-input3" class="g-search-input" autocomplete="off" spellcheck="false" placeholder=""><div id="g-nav-suggest3" class="g-suggest"></div></div>'+
+          '<div class="g-nav-right"><button class="g-login">登录</button></div>'+
+        '</div>'+
+        '<div id="g-page-body" class="g-page-body"></div>'+
+      '</div>'+
+    '</div>'+
+  '</div>';
+  var input=body.querySelector("#safari-input");
+  var navInput=body.querySelector("#g-nav-input");
+  var homeView=body.querySelector("#g-home-view");
+  var resultView=body.querySelector("#g-result-view");
+  var fileView=body.querySelector("#g-file-view");
+  var pageView=body.querySelector("#g-page-view");
+  var pageBody=body.querySelector("#g-page-body");
+  var addrText=body.querySelector("#g-address-text");
+  var suggestBox=body.querySelector("#g-suggest");
+  var navSuggest=body.querySelector("#g-nav-suggest");
+  var resultList=body.querySelector("#g-result-list");
+  var stats=body.querySelector("#g-stats");
+
+  function renderSuggest(box, q, targetInput){
+    if(!box) return;
+    var ql=(q||'').toLowerCase().trim();
+    var items=[];
+    if(!ql){ items=SUGGEST.slice(0,5); }
+    else {
+      items=SUGGEST.filter(function(s){ return s.toLowerCase().indexOf(ql)>-1; });
+      if(!items.length){ items=[ql]; }
+    }
+    if(!items.length){ box.style.display='none'; return; }
+    box.innerHTML=items.map(function(s,i){
+      return '<div class="g-sug-item" data-q="'+esc(s)+'">'+
+        '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#9aa0a6" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>'+
+        '<span class="g-sug-text">'+esc(s)+'</span></div>';
+    }).join('');
+    box.style.display='block';
+    box.querySelectorAll('.g-sug-item').forEach(function(it){
+      it.addEventListener('click', function(){ var t=it.getAttribute('data-q'); if(targetInput) targetInput.value=t; doSearch(t); });
     });
   }
-  function showStreetView(){
-    content.className="safari-page scroll";
-    content.innerHTML='<h3>杭州市西湖区文三路 · 街景</h3><p style="color:#999">8/26 00:00 · 这条记录不该存在。他 7/26 就关机了。</p><div class="red-circle"><img src="assets/p-skyline.webp" style="width:100%;border-radius:8px"></div><p>红圈里那栋楼——和照片文件夹里 7/25 夜里拍的是同一栋。</p>';
+  function bindSuggest(inputEl, box){
+    if(!inputEl) return;
+    inputEl.addEventListener('input', function(){ renderSuggest(box, inputEl.value, inputEl); });
+    inputEl.addEventListener('focus', function(){ renderSuggest(box, inputEl.value, inputEl); });
+    inputEl.addEventListener('blur', function(){ setTimeout(function(){ if(box) box.style.display='none'; }, 150); });
   }
-  input.addEventListener("keydown", function(e){
-    if(e.key!=="Enter") return;
-    var q=input.value.trim(); if(!q) return;
-    var preset=null;
-    sh.searchPresets.forEach(function(p){ if(q.indexOf(p.q)>-1 || p.q.indexOf(q)>-1) preset=p; });
-    if(preset){
-      content.className="safari-page scroll"; content.innerHTML="<h3>"+preset.label+"</h3>";
-      preset.results.forEach(function(r){
-        content.appendChild(el('<div class="srch-result"><div class="rt">'+esc(r.t)+'</div><div class="ru">'+esc(r.u)+'</div><div class="rs">'+esc(r.s)+'</div></div>'));
-      });
-      if(q.indexOf("帅气鲨团子")>-1) toast("只有网名。没有任何真实身份信息。");
-    } else {
-      content.innerHTML="<h3>没有结果</h3><p>（演示范围有限，试试：帅气鲨团子 / 李铭泽 / 文三路）</p>";
+  function matchPreset(q){
+    var ql=q.toLowerCase();
+    for(var i=0;i<sh.searchPresets.length;i++){
+      var p=sh.searchPresets[i];
+      if(ql.indexOf(p.q.toLowerCase())>-1 || p.q.toLowerCase().indexOf(ql)>-1) return p;
+      // 额外关键词匹配
+      if(p.keywords){ for(var k=0;k<p.keywords.length;k++){ if(ql.indexOf(p.keywords[k].toLowerCase())>-1) return p; } }
     }
+    return null;
+  }
+  function faviconFor(url, fav){
+    if(fav && fav!=='🔍') return '<span class="g-fav">'+fav+'</span>';
+    return '<span class="g-fav-dot"></span>';
+  }
+  function showPage(key){
+    var pg=sh.pages && sh.pages[key];
+    if(!pg) return;
+    homeView.style.display='none'; resultView.style.display='none'; fileView.style.display='none';
+    pageView.style.display='block';
+    addrText.textContent=pg.url;
+    pageBody.innerHTML=pg.html;
+  }
+  function showFileView(){
+    homeView.style.display='none'; resultView.style.display='none';
+    fileView.style.display='block';
+    addrText.textContent='file:///解密关键信息.pdf';
+  }
+  function doSearch(q){
+    q=String(q||'').trim(); if(!q) return;
+    var preset=matchPreset(q);
+    homeView.style.display='none'; resultView.style.display='block'; fileView.style.display='none'; pageView.style.display='none';
+    addrText.textContent='www.google.com/search?q='+encodeURIComponent(q);
+    if(navInput) navInput.value=q;
+    suggestBox.style.display='none'; if(navSuggest) navSuggest.style.display='none';
+    resultList.innerHTML='';
+    var count=(Math.floor(Math.random()*9000000)+1000000).toLocaleString();
+    var sec=(Math.random()*0.3+0.18).toFixed(2);
+    if(stats) stats.textContent='约 '+count+' 条结果（'+sec+' 秒）';
+    if(preset){
+      preset.results.forEach(function(r,idx){
+        var item=document.createElement('div');
+        item.className='g-result';
+        item.innerHTML='<div class="g-result-head"><span class="g-fav">'+(r.pdf?'<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#e8584b" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>':faviconFor(r.u,r.favicon))+'</span><span class="g-result-title">'+esc(r.t)+'</span></div>'+
+          '<div class="g-result-url">'+esc(r.u)+'</div>'+
+          '<div class="g-result-desc">'+esc(r.s)+'</div>';
+        if(r.pdf){
+          item.classList.add('g-result-pdf');
+          item.addEventListener('click', function(){ showFileView(); });
+        } else if(r.page){
+          item.classList.add('g-result-page');
+          item.addEventListener('click', function(){ showPage(r.page); });
+        }
+        resultList.appendChild(item);
+      });
+      if(q.indexOf('帅气鲨团子')>-1) toast('只有网名。没有任何真实身份信息。');
+    } else {
+      var nf=document.createElement('div');
+      nf.className='g-result g-noresult';
+      nf.textContent='没有找到与「'+q+'」相关的结果。';
+      resultList.appendChild(nf);
+    }
+  }
+  // 真实下载：生成 <a download> 触发浏览器下载 PDF 到玩家电脑
+  function realDownload(){
+    var a=document.createElement('a');
+    a.href='assets/files/解密关键信息.pdf';
+    a.download='解密关键信息.pdf';
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function(){ if(a.parentNode) a.parentNode.removeChild(a); }, 100);
+  }
+  // 仿 ningning 下载 flyout 动画
+  function startDownload(){
+    var flyout=body.querySelector('#g-dl-flyout');
+    var status=body.querySelector('#g-dl-status');
+    var bar=body.querySelector('#g-dl-bar');
+    var fill=body.querySelector('#g-dl-fill');
+    var btn=body.querySelector('#btn-download-info');
+    if(!flyout) return;
+    flyout.style.display='block';
+    if(status) status.textContent='0.0 MB / 0.2 MB，剩余 3 秒';
+    if(status) status.style.color='#5f6368';
+    if(bar) bar.style.display='block';
+    if(fill) fill.style.width='0%';
+    if(btn){ btn.disabled=true; btn.style.opacity='0.6'; btn.innerHTML='正在下载...'; }
+    var progress=0;
+    var timer=setInterval(function(){
+      progress+=Math.random()*20+10;
+      if(progress>=100){
+        progress=100; clearInterval(timer);
+        if(status){ status.textContent='0.2 MB • 下载完成'; status.style.color='#188038'; }
+        if(bar) bar.style.display='none';
+        if(btn){ btn.disabled=false; btn.style.opacity='1'; btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg> 重新下载'; }
+        realDownload(); // 真实触发浏览器下载
+        toast('已下载到你的电脑：解密关键信息.pdf', 3000);
+        setTimeout(function(){ flyout.style.display='none'; }, 3500);
+      }
+      if(fill) fill.style.width=progress+'%';
+      if(progress<100 && status){
+        var mb=(progress/100*0.2).toFixed(1);
+        status.textContent=mb+' MB / 0.2 MB，剩余 '+(Math.ceil((100-progress)/15))+' 秒';
+      }
+    }, 200);
+  }
+  // 主页历史记录（最近访问 → 可点击进入网页）
+  var histStrip=body.querySelector('#g-history-strip');
+  function renderHistory(){
+    if(!histStrip) return;
+    var items=(sh.history||[]).filter(function(h){ return h.page; }).slice(0,6);
+    if(!items.length){ histStrip.style.display='none'; return; }
+    histStrip.style.display='flex';
+    histStrip.innerHTML='<div class="g-history-title">最近访问</div>'+items.map(function(h){
+      return '<div class="g-history-item" data-page="'+esc(h.page)+'" title="'+esc(h.title)+'"><span class="g-history-fav">'+h.fav+'</span><span class="g-history-name">'+esc(h.title)+'</span></div>';
+    }).join('');
+    histStrip.querySelectorAll('.g-history-item').forEach(function(it){
+      it.addEventListener('click', function(){ showPage(it.getAttribute('data-page')); });
+    });
+  }
+  renderHistory();
+  // 搜索按钮
+  var sb=body.querySelector('#g-search-btn');
+  if(sb) sb.addEventListener('click', function(){ doSearch(input.value); });
+  var lb=body.querySelector('#g-lucky-btn');
+  if(lb) lb.addEventListener('click', function(){ doSearch('文三路'); });
+  // 下载按钮
+  var db=body.querySelector('#btn-download-info');
+  if(db) db.addEventListener('click', startDownload);
+  // 回车
+  function onEnter(e){
+    if(e.key==='Enter'){ var el=e.target; doSearch(el.value); }
+  }
+  input.addEventListener('keydown', onEnter);
+  if(navInput) navInput.addEventListener('keydown', onEnter);
+  var nav2=body.querySelector('#g-nav-input2');
+  if(nav2) nav2.addEventListener('keydown', onEnter);
+  var nav3=body.querySelector('#g-nav-input3');
+  if(nav3) nav3.addEventListener('keydown', onEnter);
+  // 建议
+  bindSuggest(input, suggestBox);
+  if(navInput) bindSuggest(navInput, navSuggest);
+  var navSug2=body.querySelector('#g-nav-suggest2');
+  if(nav2) bindSuggest(nav2, navSug2);
+  var navSug3=body.querySelector('#g-nav-suggest3');
+  if(nav3) bindSuggest(nav3, navSug3);
+  // 后退/主页按钮
+  var backBtn=body.querySelector('.g-back');
+  if(backBtn) backBtn.addEventListener('click', function(){ homeView.style.display='flex'; resultView.style.display='none'; fileView.style.display='none'; pageView.style.display='none'; addrText.textContent='www.google.com'; if(input) input.value=''; });
+  var homeBtn=body.querySelector('.g-home-btn');
+  if(homeBtn) homeBtn.addEventListener('click', function(){ homeView.style.display='flex'; resultView.style.display='none'; fileView.style.display='none'; pageView.style.display='none'; addrText.textContent='www.google.com'; });
+  var reloadBtn=body.querySelector('.g-reload');
+  if(reloadBtn) reloadBtn.addEventListener('click', function(){
+    if(fileView.style.display==='block'){ showFileView(); }
+    else if(pageView.style.display==='block'){ var cur=pageBody.getAttribute('data-page'); if(cur) showPage(cur); }
+    else if(resultView.style.display==='block' && navInput && navInput.value){ doSearch(navInput.value); }
   });
-  showHistory();
 }
 
 function buildNotes(win, body){
@@ -517,7 +762,7 @@ function rebootComputer(nextStage){
   S.stage=nextStage; saveState();
   for(var k in S.wins){ try{ closeWin(k); }catch(e){} }
   $("launchpad").classList.remove("open");
-  ["screen-desktop","screen-login","screen-boot","screen-ending"].forEach(function(x){ var e=$(x); if(e) e.classList.add("hidden"); });
+  ["screen-desktop","screen-login","screen-boot","screen-ending","screen-oobe"].forEach(function(x){ setScreen(x, true); });
   var c=$("screen-crash"); if(c) c.classList.remove("hidden");
   setTimeout(function(){
     if(c) c.classList.add("hidden");
@@ -714,24 +959,124 @@ function buildSettings(win, body){
   showAbout();
 }
 
+/* ============ 小红书（仿 XiaoShiLiu 设计） ============ */
+function xhsUrl(u){ if(!u) return u; if(u.indexOf("assets/")===0 || /^(https?:|data:|blob:)/.test(u)) return u; return "assets/"+u; }
+var XHS_COMMENTS = [
+  {name:"爱吃西柚", avatar:"柚", text:"真的九十三平嘛为啥看起来这么大", time:"07-25 21:02", likes:128, replies:[{name:"作者", text:"套内93，加阳台~", time:"07-25 21:40", likes:36}]},
+  {name:"一颗小汤圆", avatar:"汤", text:"呜呜呜好温馨，我也想有自己的家了", time:"07-24 22:41", likes:86, replies:[]},
+  {name:"干饭王", avatar:"干", text:"收藏了，谢谢分享！", time:"07-23 19:15", likes:54, replies:[]},
+  {name:"小鹿乱撞", avatar:"鹿", text:"这也太好看了吧", time:"07-22 14:33", likes:41, replies:[]},
+  {name:"清醒的雯", avatar:"雯", text:"姐妹们看清楚，这种话术要警惕", time:"07-21 23:58", likes:203, replies:[{name:"路人甲", text:"细思极恐……", time:"07-22 08:12", likes:19}]},
+  {name:"阿绿在杭州", avatar:"绿", text:"文三路那边吗？我上次也去了，感觉最近人变少了", time:"07-24 20:17", likes:67, replies:[]},
+  {name:"热心市民陈", avatar:"陈", text:"7月底那边好像出了点事，街上都没什么人", time:"07-26 01:20", likes:112, replies:[]},
+  {name:"网管小李", avatar:"网", text:"这个我熟，别说了", time:"07-28 03:47", likes:98, replies:[{name:"键盘侠", text:"细说细说", time:"07-28 09:02", likes:7}]}
+];
+// 每条帖子补充的展示数据（地点/认证/评论区）
+var XHS_EXTRA = [
+  {loc:"山东·济南", verified:1, cmts:[0,1]},
+  {loc:"山东·济南", verified:0, cmts:[1,3]},
+  {loc:"山东·济南", verified:1, cmts:[2,0]},
+  {loc:"山东·德州", verified:1, cmts:[3,2]},
+  {loc:"杭州·动物园", verified:0, cmts:[1,2]},
+  {loc:"杭州·水族馆", verified:0, cmts:[3,1]},
+  {loc:"山东·济南", verified:1, cmts:[2,3]},
+  {loc:"山东·济南", verified:0, cmts:[0,2]},
+  {loc:"杭州", verified:1, cmts:[4,0]},
+  {loc:"杭州·文三路", verified:1, cmts:[5,6]},
+  {loc:"杭州·文三路", verified:0, cmts:[1,3]},
+  {loc:"杭州·文三路515号附近", verified:0, cmts:[6,7]},
+  {loc:"杭州·某网吧", verified:0, cmts:[7,5]}
+];
+function fmtLikes(n){ return n>=10000 ? (n/10000).toFixed(1)+"万" : String(n); }
+function xhsCommentHtml(c){
+  var verified = c.verified ? '<svg class="xhs-verified" viewBox="0 0 16 16" width="12" height="12"><path fill="#ff2442" d="M8 1l1.8 1.2 2.2-.2.6 2.1 1.9 1.1-.8 2 .8 2-1.9 1.1-.6 2.1-2.2-.2L8 14.5 6.2 13.3l-2.2.2-.6-2.1L1.5 10.2l.8-2-.8-2 2-1.1.6-2.1 2.2.2z"/><path fill="#fff" d="M6.6 10.4L4.8 8.6l.9-.9 1 1 2.6-2.7.9.9z"/></svg>' : '';
+  var authorBadge = c.author ? '<span class="xhs-author-badge">作者</span>' : '';
+  var replies = '';
+  if(c.replies && c.replies.length){
+    replies = '<div class="xhs-replies">'+c.replies.map(function(r){
+      return '<div class="xhs-reply"><span class="xhs-reply-name">'+esc(r.name)+'：</span><span class="xhs-reply-text">'+esc(r.text)+'</span><span class="xhs-reply-like">'+fmtLikes(r.likes)+'</span></div>';
+    }).join('')+'</div>';
+  }
+  return '<div class="xhs-cmt"><div class="xhs-cmt-av">'+(c.avatar&&c.avatar.length===1?'<span>'+esc(c.avatar)+'</span>':'<img src="'+c.avatar+'" alt="">')+'</div><div class="xhs-cmt-b"><div class="xhs-cmt-name">'+esc(c.name)+verified+authorBadge+'</div><div class="xhs-cmt-text">'+esc(c.text)+'</div><div class="xhs-cmt-foot"><span class="xhs-cmt-time">'+esc(c.time)+'</span><span class="xhs-cmt-like">💜 '+fmtLikes(c.likes)+'</span><span class="xhs-cmt-reply">回复</span></div>'+replies+'</div></div>';
+}
+/* ============ 小红书 Vue 加载器（混合架构：优先 Vue bundle，缺则回退原生） ============ */
+function loadXhsVue(win, body, onReady, onFail){
+  var existing = body.querySelector(".xhs-vue-root");
+  if(existing){ onReady && onReady(existing); return; }
+  var done = false;
+  function finish(ok){
+    if(done) return; done = true;
+    if(ok && window.__XHSApp){
+      var root = document.createElement("div");
+      root.className = "xhs-vue-root";
+      root.style.cssText = "position:absolute;inset:0;z-index:1";
+      body.appendChild(root);
+      window.__XHSApp.mount(root, {
+        toast: function(msg, ms){ toast(msg, ms); },
+        plotHint: function(hint){ setTimeout(function(){ toast(hint, 3400); }, 600); }
+      });
+      onReady && onReady(root);
+    } else {
+      onFail && onFail();
+    }
+  }
+  var script = document.createElement("script");
+  script.src = "assets/xhs-app/xhs-app.js";
+  script.onload = function(){ finish(true); };
+  script.onerror = function(){ finish(false); };
+  document.body.appendChild(script);
+  // 超时保护：3.5s 内没挂载上就回退原生（脚本加载但无 __XHSApp 的情况）
+  setTimeout(function(){ if(!window.__XHSApp && !done) finish(false); }, 3500);
+}
+
 function buildXHS(win, body){
   body.innerHTML='<div class="xhs-shell">'+
-    '<div class="xhs-topbar"><span class="xhs-brand">小红书</span><div class="xhs-top-tabs"><span class="xhs-tab active">推荐</span><span class="xhs-tab">发现</span></div><div class="xhs-search"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#999" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg><input placeholder="搜索你感兴趣的内容" id="xhs-q"></div></div>'+
-    '<div class="xhs-main">'+
-      '<div class="xhs-side"><div class="xhs-side-h">分类</div><div class="xhs-nav active">\uD83C\uDFE0 首页</div><div class="xhs-nav">\uD83D\uDD0D 发现</div><div class="xhs-nav">\u2615 生活</div><div class="xhs-nav">\uD83D\uDECF 装修</div><div class="xhs-nav">\uD83C\uDF54 美食</div><div class="xhs-nav">\uD83D\uDC56 时尚</div><div class="xhs-nav">\u2708\uFE0F 旅行</div><div class="xhs-side-h" style="margin-top:18px">热门话题</div><div class="xhs-side-tags" id="xhs-side-tags"></div></div>'+
-      '<div class="xhs-feed-wrap"><div class="xhs-feed" id="xhs-feed"></div></div>'+
+    '<div class="xhs-topbar">'+
+      '<div class="xhs-logo"><span class="xhs-brand">小红书</span></div>'+
+      '<div class="xhs-search"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#999" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.5" y2="16.5"/></svg><input placeholder="搜索你感兴趣的内容" id="xhs-q"></div>'+
+      '<div class="xhs-user"><img src="assets/avatar.png" alt=""></div>'+
     '</div>'+
+    '<div class="xhs-channels" id="xhs-channels">'+
+      '<span class="xhs-channel active" data-cat="推荐">推荐</span>'+
+      '<span class="xhs-channel" data-cat="关注">关注</span>'+
+      '<span class="xhs-channel" data-cat="装修">装修</span>'+
+      '<span class="xhs-channel" data-cat="美食">美食</span>'+
+      '<span class="xhs-channel" data-cat="时尚">时尚</span>'+
+      '<span class="xhs-channel" data-cat="旅行">旅行</span>'+
+      '<span class="xhs-channel" data-cat="萌宠">萌宠</span>'+
+      '<span class="xhs-channel" data-cat="日常">日常</span>'+
+      '<span class="xhs-channel" data-cat="情感">情感</span>'+
+      '<span class="xhs-channel" data-cat="灵异">灵异</span>'+
+      '<div class="xhs-channel-slider" id="xhs-slider"></div>'+
+    '</div>'+
+    '<div class="xhs-feed-wrap"><div class="xhs-feed" id="xhs-feed"></div></div>'+
     '<div class="xhs-modal" id="xhs-modal"></div>'+
   '</div>';
-  var sideTags=body.querySelector("#xhs-side-tags");
-  ["#杭州","#文三路","#杀猪盘","#网恋","#灵异","#减脂","#探店","#游戏"].forEach(function(t){
-    var chip=el('<span class="xhs-chip">'+t+'</span>');
-    chip.addEventListener("click", function(){ toast("搜索「"+t+"」……（演示）", 2000); });
-    sideTags.appendChild(chip);
-  });
   var feed=body.querySelector("#xhs-feed");
   var modal=body.querySelector("#xhs-modal");
   var q=body.querySelector("#xhs-q");
+  var activeCat="推荐";
+
+  function cardHtml(p, idx){
+    var ratio = [1.25, 0.8, 1.05, 1.4, 0.95, 1.15, 1.3, 0.85, 1.0, 1.2, 0.9, 1.35, 1.1][idx % 13];
+    return '<div class="xhs-card" data-i="'+idx+'">'+
+      '<div class="xhs-card-imgwrap" style="padding-bottom:'+(100/ratio)+'%"><img class="xhs-card-img" src="'+xhsUrl(p.imgs[0])+'" loading="lazy" onerror="this.src=\'assets/xhs/xhs-loading.png\'"></div>'+
+      '<div class="xhs-card-title">'+esc(p.title)+'</div>'+
+      '<div class="xhs-card-meta"><div class="xhs-avatar small">'+(p.avatar&&p.avatar.length===1?'<span>'+esc(p.avatar)+'</span>':'<img src="'+xhsUrl(p.avatar)+'">')+'</div><span class="xhs-card-author">'+esc(p.author)+'</span><span class="xhs-card-likes"><svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M12 21s-7.5-4.6-10-9.3C.5 8.6 2.5 4.8 6.2 4.3c2.1-.3 4 .7 5.8 2.8 1.8-2.1 3.7-3.1 5.8-2.8 3.7.5 5.7 4.3 4.2 7.4C19.5 16.4 12 21 12 21z"/></svg>'+fmtLikes(p.likes)+'</span></div>'+
+    '</div>';
+  }
+  function render(){
+    feed.innerHTML="";
+    ST.xhs.posts.forEach(function(p, idx){
+      var ex = XHS_EXTRA[idx]||{};
+      if(activeCat==="关注"){ return; }
+      if(activeCat!=="推荐" && (p.cat!==activeCat)){ return; }
+      var card=el(cardHtml(p, idx));
+      card.addEventListener("click", function(){ openXhsModal(p, idx, modal); });
+      feed.appendChild(card);
+    });
+    // 瀑布流用 CSS columns 自动分列
+  }
   q.addEventListener("input", function(){
     var v=q.value.trim();
     var cards=feed.querySelectorAll(".xhs-card");
@@ -739,89 +1084,109 @@ function buildXHS(win, body){
       cards[i].style.display = (!v || cards[i].textContent.indexOf(v)>-1) ? "" : "none";
     }
   });
-  function fmtLikes(n){ return n>=10000 ? (n/10000).toFixed(1)+"万" : String(n); }
-  ST.xhs.posts.forEach(function(p, idx){
-    var card=el('<div class="xhs-card" data-i="'+idx+'">'+
-      '<img class="xhs-card-img" src="'+p.imgs[0]+'" loading="lazy" onerror="this.src=\'assets/img-fallback.jpg\'">'+
-      '<div class="xhs-card-title">'+esc(p.title)+'</div>'+
-      '<div class="xhs-card-meta"><div class="xhs-avatar small">'+(p.avatar.length===1?'<span>'+p.avatar+'</span>':'<img src="'+p.avatar+'">')+'</div><span class="xhs-card-author">'+esc(p.author)+'</span><span class="xhs-card-likes">\u2764 '+fmtLikes(p.likes)+'</span></div>'+
-      '<div class="xhs-card-tags">'+p.tags.slice(0,2).map(function(t){ return '#'+esc(t); }).join(' ')+'</div>'+
-    '</div>');
-    card.addEventListener("click", function(){ openXhsModal(p, idx, modal); });
-    feed.appendChild(card);
-  });
-  body.querySelectorAll(".xhs-top-tabs .xhs-tab").forEach(function(t){
-    t.addEventListener("click", function(){
-      body.querySelectorAll(".xhs-top-tabs .xhs-tab").forEach(function(x){ x.classList.remove("active"); });
-      t.classList.add("active");
-    });
-  });
-  body.querySelectorAll(".xhs-nav").forEach(function(n){
-    n.addEventListener("click", function(){
-      body.querySelectorAll(".xhs-nav").forEach(function(x){ x.classList.remove("active"); });
-      n.classList.add("active");
-    });
-  });
+  var slider=body.querySelector("#xhs-slider");
+  function moveSlider(){
+    var chans=body.querySelectorAll(".xhs-channel");
+    var active=null;
+    for(var i=0;i<chans.length;i++){ if(chans[i].classList.contains("active")){ active=chans[i]; break; } }
+    if(slider && active){ slider.style.left=active.offsetLeft+"px"; slider.style.width=active.offsetWidth+"px"; }
+  }
+  var chans=body.querySelectorAll(".xhs-channel");
+  for(var ci=0;ci<chans.length;ci++){
+    (function(ch){
+      ch.addEventListener("click", function(){
+        for(var x=0;x<chans.length;x++) chans[x].classList.remove("active");
+        ch.classList.add("active");
+        activeCat=ch.getAttribute("data-cat");
+        render();
+        moveSlider();
+      });
+    })(chans[ci]);
+  }
+  render();
+  setTimeout(moveSlider, 30);
   modal.addEventListener("click", function(e){ if(e.target===modal) modal.classList.remove("open"); });
 }
-var XHS_COMMENTS=[
-  ["爱吃西柚","真的九十三平嘛为啥看起来这么大","07-25 21:02"],
-  ["一颗小汤圆","呜呜呜好温馨，我也想有自己的家了","07-24 22:41"],
-  ["干饭王","收藏了，谢谢分享！","07-23 19:15"],
-  ["小鹿乱撞","这也太好看了吧","07-22 14:33"],
-  ["清醒的雯","姐妹们看清楚，这种话术要警惕","07-21 23:58"],
-  ["阿绿在杭州","文三路那边吗？我上次也去了，感觉最近人变少了","07-24 20:17"],
-  ["热心市民陈","7月底那边好像出了点事，街上都没什么人","07-26 01:20"],
-  ["网管小李","这个我熟，别说了","07-28 03:47"]
-];
 function openXhsModal(p, idx, modal){
   if(!S.xhsLikes) S.xhsLikes={};
   if(!S.xhsFw) S.xhsFw={};
   if(!S.xhsStar) S.xhsStar={};
-  var avHtml = (p.avatar && p.avatar.length===1) ? '<span style="color:#fff">'+p.avatar+'</span>' : '<img src="'+p.avatar+'" alt="">';
-  var cmts = [XHS_COMMENTS[(idx*2)%XHS_COMMENTS.length], XHS_COMMENTS[(idx*2+1)%XHS_COMMENTS.length]];
-  var cmtHtml = cmts.map(function(c){
-    return '<div class="xhs-cmt"><div class="xhs-cmt-av">'+c[0].slice(0,1)+'</div><div class="xhs-cmt-b"><div class="xhs-cmt-name">'+c[0]+'</div><div class="xhs-cmt-text">'+c[1]+'</div><div class="xhs-cmt-time">'+c[2]+'</div></div></div>';
-  }).join('');
-  modal.innerHTML='<div class="xhs-modal-inner">'+
-    '<div class="xhs-m-head"><div class="xhs-avatar">'+avHtml+'</div><div class="xhs-author">'+esc(p.author)+'</div><span class="xhs-follow'+(S.xhsFw[idx]?' followed':'')+'" id="xhs-m-follow">'+(S.xhsFw[idx]?'已关注':'关注')+'</span><span class="xhs-m-date">'+p.date+'</span></div>'+
-    '<div class="xhs-m-title">'+esc(p.title)+'</div>'+
-    (p.imgs.length?'<div class="xhs-m-imgs">'+p.imgs.map(function(s){ return '<img src="'+s+'">'; }).join('')+'</div>':'')+
-    '<div class="xhs-m-body">'+esc(p.body)+'</div>'+
-    '<div class="xhs-tags">'+p.tags.map(function(t){ return '<span>#'+esc(t)+'</span>'; }).join('')+'</div>'+
-    '<div class="xhs-cmt-h">共 '+(9+idx*3)+' 条评论</div>'+
-    '<div class="xhs-cmts">'+cmtHtml+'</div>'+
-    '<div class="xhs-m-bar"><span class="xhs-like'+(S.xhsLikes[idx]?' liked':'')+'" id="xhs-m-like">\u2764 '+(S.xhsLikes[idx]?p.likes+1:p.likes)+'</span><span class="xhs-star'+(S.xhsStar[idx]?' starred':'')+'" id="xhs-m-star">'+(S.xhsStar[idx]?'\u2B50 已收藏':'\u2B50 收藏')+'</span><span class="xhs-cm">\uD83D\uDCAC '+(321+idx*137%900)+'</span><input class="xhs-cmt-input" placeholder="说点什么..."><span class="xhs-share">\uD83D\uDD17 分享</span></div>'+
-    '<div class="xhs-m-close">\u2715</div>'+
+  var ex = XHS_EXTRA[idx]||{};
+  var cmtIdx = ex.cmts || [(idx*2)%XHS_COMMENTS.length, (idx*2+1)%XHS_COMMENTS.length];
+  var cmts = cmtIdx.map(function(ci){ return XHS_COMMENTS[ci % XHS_COMMENTS.length]; });
+  var cmtHtml = cmts.map(xhsCommentHtml).join('');
+  var verified = ex.verified ? '<svg class="xhs-verified" viewBox="0 0 16 16" width="16" height="16"><path fill="#ff2442" d="M8 1l1.8 1.2 2.2-.2.6 2.1 1.9 1.1-.8 2 .8 2-1.9 1.1-.6 2.1-2.2-.2L8 14.5 6.2 13.3l-2.2.2-.6-2.1L1.5 10.2l.8-2-.8-2 2-1.1.6-2.1 2.2.2z"/><path fill="#fff" d="M6.6 10.4L4.8 8.6l.9-.9 1 1 2.6-2.7.9.9z"/></svg>' : '';
+  var avHtml = (p.avatar && p.avatar.length===1) ? '<span>'+esc(p.avatar)+'</span>' : '<img src="'+xhsUrl(p.avatar)+'" alt="">';
+  var imgs = (p.imgs && p.imgs.length) ? p.imgs : [p.imgs[0]||""];
+  var multi = imgs.length > 1;
+  modal.innerHTML='<div class="xhs-modal-card">'+
+    '<button class="xhs-modal-close" id="xhs-m-close">✕</button>'+
+    '<div class="xhs-modal-img">'+
+      '<div class="xhs-img-slider" id="xhs-slider">'+imgs.map(function(s){ return '<img src="'+xhsUrl(s)+'" onerror="this.src=\'assets/xhs/xhs-loading.png\'">'; }).join('')+'</div>'+
+      (multi?'<button class="xhs-img-nav prev" id="xhs-img-prev">‹</button><button class="xhs-img-nav next" id="xhs-img-next">›</button>':'')+
+      (multi?'<div class="xhs-img-count" id="xhs-img-count">1/'+imgs.length+'</div>':'')+
+    '</div>'+
+    '<div class="xhs-modal-detail">'+
+      '<div class="xhs-m-author"><div class="xhs-avatar">'+avHtml+'</div><div class="xhs-m-author-name">'+esc(p.author)+verified+'</div><span class="xhs-follow'+(S.xhsFw[idx]?' followed':'')+'" id="xhs-m-follow">'+(S.xhsFw[idx]?'已关注':'关注')+'</span></div>'+
+      '<div class="xhs-m-scroll">'+
+        '<div class="xhs-m-title">'+esc(p.title)+'</div>'+
+        '<div class="xhs-m-body">'+esc(p.body)+'</div>'+
+        '<div class="xhs-tags">'+p.tags.map(function(t){ return '<span>#'+esc(t)+'</span>'; }).join('')+'</div>'+
+        '<div class="xhs-m-meta"><span>'+p.date+'</span>'+(ex.loc?'<span class="xhs-m-loc">📍 '+esc(ex.loc)+'</span>':'')+'</div>'+
+        '<div class="xhs-divider"></div>'+
+        '<div class="xhs-cmt-h">共 '+(24+idx*7)+' 条评论</div>'+
+        '<div class="xhs-cmts">'+cmtHtml+'</div>'+
+      '</div>'+
+      '<div class="xhs-m-bar">'+
+        '<span class="xhs-like'+(S.xhsLikes[idx]?' liked':'')+'" id="xhs-m-like"><svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 21s-7.5-4.6-10-9.3C.5 8.6 2.5 4.8 6.2 4.3c2.1-.3 4 .7 5.8 2.8 1.8-2.1 3.7-3.1 5.8-2.8 3.7.5 5.7 4.3 4.2 7.4C19.5 16.4 12 21 12 21z"/></svg><em>'+(S.xhsLikes[idx]?fmtLikes(p.likes+1):fmtLikes(p.likes))+'</em></span>'+
+        '<span class="xhs-star'+(S.xhsStar[idx]?' starred':'')+'" id="xhs-m-star"><svg viewBox="0 0 24 24" width="19" height="19" fill="currentColor"><path d="M12 2l2.9 6.3 6.9.8-5.1 4.7 1.4 6.8L12 17.3 5.9 20.6l1.4-6.8L2.2 9.1l6.9-.8z"/></svg><em>收藏</em></span>'+
+        '<span class="xhs-cm"><svg viewBox="0 0 24 24" width="19" height="19" fill="currentColor"><path d="M4 4h16v12H8l-4 4z"/></svg><em>'+(24+idx*7)+'</em></span>'+
+        '<span class="xhs-share" id="xhs-m-share"><svg viewBox="0 0 24 24" width="19" height="19" fill="currentColor"><path d="M12 2l7 7-1.4 1.4L13 6v11h-2V6L6.4 10.4 5 9z"/></svg><em>分享</em></span>'+
+      '</div>'+
+      '<div class="xhs-m-input-row"><input class="xhs-cmt-input" id="xhs-cmt-input" placeholder="说点什么..."><span class="xhs-input-send" id="xhs-input-send">发布</span></div>'+
+    '</div>'+
   '</div>';
   modal.classList.add("open");
+  var imgIdx=0;
+  var slider=modal.querySelector("#xhs-slider");
+  function updateImg(){
+    slider.style.transform="translateX(-"+(imgIdx*100)+"%)";
+    var c=modal.querySelector("#xhs-img-count"); if(c) c.textContent=(imgIdx+1)+"/"+imgs.length;
+  }
+  var prev=modal.querySelector("#xhs-img-prev"), next=modal.querySelector("#xhs-img-next");
+  if(prev) prev.addEventListener("click", function(e){ e.stopPropagation(); if(imgIdx>0){ imgIdx--; updateImg(); } });
+  if(next) next.addEventListener("click", function(e){ e.stopPropagation(); if(imgIdx<imgs.length-1){ imgIdx++; updateImg(); } });
   modal.querySelector("#xhs-m-close").addEventListener("click", function(){ modal.classList.remove("open"); });
   modal.querySelector("#xhs-m-like").addEventListener("click", function(){
     S.xhsLikes[idx]=!S.xhsLikes[idx];
-    this.textContent="\u2764 "+(S.xhsLikes[idx]?p.likes+1:p.likes);
+    var em=this.querySelector("em");
+    em.textContent=S.xhsLikes[idx]?fmtLikes(p.likes+1):fmtLikes(p.likes);
     this.classList.toggle("liked", !!S.xhsLikes[idx]);
+    this.classList.remove("pop"); void this.offsetWidth; this.classList.add("pop");
   });
   modal.querySelector("#xhs-m-star").addEventListener("click", function(){
     S.xhsStar[idx]=!S.xhsStar[idx];
-    this.textContent=S.xhsStar[idx]?"\u2B50 已收藏":"\u2B50 收藏";
     this.classList.toggle("starred", !!S.xhsStar[idx]);
+    this.querySelector("em").textContent=S.xhsStar[idx]?"已收藏":"收藏";
   });
   modal.querySelector("#xhs-m-follow").addEventListener("click", function(){
     S.xhsFw[idx]=!S.xhsFw[idx];
     this.textContent=S.xhsFw[idx]?"已关注":"关注";
     this.classList.toggle("followed", !!S.xhsFw[idx]);
   });
-  var ci=modal.querySelector(".xhs-cmt-input");
-  ci.addEventListener("keydown", function(e){
-    if(e.key==="Enter" && ci.value.trim()){
-      var cmt=el('<div class="xhs-cmt"><div class="xhs-cmt-av">我</div><div class="xhs-cmt-b"><div class="xhs-cmt-name">我</div><div class="xhs-cmt-text">'+esc(ci.value.trim())+'</div><div class="xhs-cmt-time">刚刚</div></div></div>');
-      modal.querySelector(".xhs-cmts").appendChild(cmt);
-      ci.value="";
-      var h=modal.querySelector(".xhs-cmt-h");
-      h.textContent="共 "+((9+idx*3)+1)+" 条评论";
-      toast("评论已发布。……他会不会也刷到过这条？", 3000);
-    }
-  });
+  modal.querySelector("#xhs-m-share").addEventListener("click", function(){ toast("链接已复制。……他会看到吗？", 2600); });
+  var ci=modal.querySelector("#xhs-cmt-input");
+  function submitCmt(){
+    var v=ci.value.trim(); if(!v) return;
+    var cmt=el('<div class="xhs-cmt"><div class="xhs-cmt-av"><img src="assets/avatar.png" alt=""></div><div class="xhs-cmt-b"><div class="xhs-cmt-name">我</div><div class="xhs-cmt-text">'+esc(v)+'</div><div class="xhs-cmt-foot"><span class="xhs-cmt-time">刚刚</span><span class="xhs-cmt-like">💜 0</span><span class="xhs-cmt-reply">回复</span></div></div></div>');
+    modal.querySelector(".xhs-cmts").appendChild(cmt);
+    ci.value="";
+    var h=modal.querySelector(".xhs-cmt-h");
+    h.textContent="共 "+((24+idx*7)+1)+" 条评论";
+    toast("评论已发布。……他会不会也刷到过这条？", 3000);
+  }
+  ci.addEventListener("keydown", function(e){ if(e.key==="Enter") submitCmt(); });
+  modal.querySelector("#xhs-input-send").addEventListener("click", submitCmt);
   if(p.plotHint){ setTimeout(function(){ toast(p.plotHint, 3400); }, 600); }
 }
 
@@ -829,7 +1194,7 @@ function openXhsModal(p, idx, modal){
 function showEnding(type){
   window.__curEnding=type; S.voicePlayed=false;
   S.ending=type; saveState();
-  ["screen-desktop","screen-login","screen-boot"].forEach(function(s){ $(s).classList.add("hidden"); });
+  ["screen-desktop","screen-login","screen-boot","screen-oobe"].forEach(function(s){ setScreen(s, true); });
   var e=ST.endings[type];
   $("screen-ending").classList.remove("hidden");
   var t=$("ending-title"), b=$("ending-body"), a=$("ending-actions");
@@ -859,6 +1224,7 @@ function showEnding(type){
   setTimeout(function(){ a.style.opacity="1"; var h=$("ending-hint"); h.textContent="——点击屏幕任意处继续——"; h.style.opacity=".55"; }, 3400);
 }
 
+function setScreen(id, hidden){ var e=$(id); if(e){ if(hidden) e.classList.add("hidden"); else e.classList.remove("hidden"); } }
 /* ============ 绑定 ============ */
 document.addEventListener("DOMContentLoaded", function(){
   var qs={};
@@ -867,19 +1233,19 @@ document.addEventListener("DOMContentLoaded", function(){
   var hasSave = false;
   try{ hasSave = !!localStorage.getItem(SAVE_KEY); }catch(e){}
   var pendingEnding = S.ending;
-  if(want==="desktop"){ $("screen-oobe").classList.add("hidden"); $("screen-boot").classList.add("hidden"); $("screen-login").classList.add("hidden"); $("screen-desktop").classList.remove("hidden"); }
-  else if(want==="login"){ $("screen-oobe").classList.add("hidden"); $("screen-boot").classList.add("hidden"); $("screen-login").classList.remove("hidden"); }
+  if(want==="desktop"){ setScreen("screen-oobe", true); setScreen("screen-boot", true); setScreen("screen-login", true); setScreen("screen-desktop", false); }
+  else if(want==="login"){ setScreen("screen-oobe", true); setScreen("screen-boot", true); setScreen("screen-login", false); }
   else if(hasSave){
-    $("screen-oobe").classList.add("hidden");
-    $("screen-boot").classList.add("hidden");
-    $("screen-login").classList.add("hidden");
-    $("screen-desktop").classList.remove("hidden");
+    setScreen("screen-oobe", true);
+    setScreen("screen-boot", true);
+    setScreen("screen-login", true);
+    setScreen("screen-desktop", false);
     setTimeout(function(){ toast("已恢复上次进度（第 "+S.stage+" 幕）", 3000); }, 900);
   } else if(!hasSave){
-    $("screen-oobe").classList.remove("hidden");
-    $("screen-boot").classList.add("hidden");
-    $("screen-login").classList.add("hidden");
-    $("screen-desktop").classList.add("hidden");
+    setScreen("screen-oobe", false);
+    setScreen("screen-boot", true);
+    setScreen("screen-login", true);
+    setScreen("screen-desktop", true);
   } else {
     setTimeout(boot, 500);
   }
@@ -924,8 +1290,10 @@ document.addEventListener("DOMContentLoaded", function(){
 var APPS = {
   finder: { title:"访达", w:760, h:540, x:70, y:46, build:buildFinder },
   wechat: { title:"微信", w:860, h:600, x:170, y:60, build:buildWeChat },
-  safari: { title:"Safari", w:860, h:580, x:90, y:58, build:buildSafari },
-  xhs: { title:"小红书", w:1024, h:640, x:100, y:50, build:buildXHS },
+  safari: { title:"Google Chrome", w:900, h:600, x:90, y:58, build:buildSafari },
+  xhs: { title:"小红书", w:1024, h:640, x:100, y:50, build:function(win, body){
+    loadXhsVue(win, body, null, function(){ buildXHS(win, body); });
+  } },
   notes: { title:"备忘录", w:660, h:520, x:200, y:70, build:buildNotes },
   photos: { title:"照片", w:720, h:540, x:140, y:64, build:buildPhotos },
   voice: { title:"语音备忘录", w:560, h:470, x:210, y:84, build:buildVoice },
